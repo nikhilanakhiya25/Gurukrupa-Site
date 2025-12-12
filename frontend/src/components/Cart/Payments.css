@@ -1,0 +1,78 @@
+.payment-page {
+    text-align: center;
+    padding: 40px;
+}
+
+.payment-box {
+    max-width: 650px;
+    margin: auto;
+}
+
+.payment-box button {
+    width: 100%;
+    padding: 15px;
+    margin-top: 15px;
+    font-size: 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    transition: 0.2s;
+}
+
+.selected-payment {
+    background: #0066ff;
+    color: white;
+    border-color: #0066ff;
+}
+
+.continue-btn {
+    background: #0066ff;
+    color: white;
+    font-weight: bold;
+}
+
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+.popup-box {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    width: 380px;
+    text-align: center;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.popup-actions {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.cancel-btn {
+    background: grey;
+    padding: 10px 20px;
+    color: white;
+    border-radius: 6px;
+}
+
+.place-btn {
+    background: #28a745;
+    padding: 10px 20px;
+    color: white;
+    border-radius: 6px;
+}
+
+.success {
+    border-top: 5px solid #28a745;
+}

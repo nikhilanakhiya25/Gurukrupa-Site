@@ -1,0 +1,142 @@
+.product-card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  padding: 10px;
+  text-align: center;
+  transition: transform 0.3s;
+  min-width: 200px;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+}
+
+.product-card .img-box {
+  height: 200px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.product-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.product-card h3 {
+  font-size: 1.1rem;
+  margin: 10px 0 5px;
+}
+
+.product-card .price {
+  color: #ff6f61;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.product-card .btn-add {
+  padding: 8px 15px;
+  background-color: #333;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: 0.3s;
+}
+
+.product-card .btn-add:hover {
+  background-color: #ff6f61;
+}
+/* Offer Banner */
+.offer-banner img {
+    width: 100%;
+    margin: 20px 0;
+    border-radius: 8px;
+}
+
+/* Coupon Popup */
+.coupon-popup {
+    position: fixed;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, 0);
+    background-color: #ff6f61;
+    color: white;
+    padding: 30px 40px;
+    border-radius: 10px;
+    z-index: 9999;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    text-align: center;
+}
+
+.coupon-popup button {
+    margin-top: 15px;
+    padding: 8px 15px;
+    border: none;
+    background-color: #333;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.coupon-popup button:hover {
+    background-color: #000;
+}
+
+/* Product Card hover */
+.product-card .description {
+    font-size: 0.9rem;
+    color: #555;
+    margin: 5px 0 10px;
+}
+
+/* Responsive Design */
+
+/* Mobile */
+@media (max-width: 768px) {
+    .product-card {
+        min-width: 140px;
+        padding: 8px;
+    }
+
+    .product-card .img-box {
+        height: 160px;
+        margin-bottom: 8px;
+    }
+
+    .product-card img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .product-card h3 {
+        font-size: 1rem;
+        margin: 8px 0 3px;
+    }
+
+    .product-card .price {
+        font-size: 0.9rem;
+        margin-bottom: 8px;
+    }
+
+    .product-card .btn-add {
+        padding: 6px 12px;
+        font-size: 0.9rem;
+    }
+
+    .product-card .description {
+        font-size: 0.8rem;
+        margin: 3px 0 8px;
+    }
+
+    .coupon-popup {
+        padding: 15px 20px;
+    }
+
+    .coupon-popup button {
+        padding: 5px 10px;
+        font-size: 0.9rem;
+    }
+}

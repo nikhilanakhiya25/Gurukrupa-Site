@@ -1,92 +1,147 @@
-import React, { useState, useEffect } from 'react';
-import API from '../../api/api';
-import './Product.css';
+import React, { useState, useEffect } from "react";
+import API from "../../api/api";
+import "./Product.css";
 
 export default function Products() {
     const [products, setProducts] = useState([]);
-    const [form, setForm] = useState({});
+    const [form, setForm] = useState({
+        name: "",
+        price: "",
+        colors: "",
+        countInStock: "",
+    });
     const [file, setFile] = useState(null);
     const [editingId, setEditingId] = useState(null);
+    const [loading, setLoading] = useState(false);
 
+    // =========================
+    // LOAD PRODUCTS
+    // =========================
     useEffect(() => {
         loadProducts();
     }, []);
 
     const loadProducts = async () => {
         try {
-            const res = await API.get('/admin/products');
+            const res = await API.get("/admin/products");
             setProducts(res.data.products || res.data);
         } catch (err) {
             console.error("LOAD PRODUCTS ERROR:", err.response?.data || err);
         }
     };
 
+    // =========================
+    // ADD / UPDATE PRODUCT
+    // =========================
     const submitProduct = async (e) => {
         e.preventDefault();
-
-        const fd = new FormData();
-        fd.append('name', form.name || '');
-        fd.append('price', form.price || 0);
-        fd.append('colors', form.colors || '');
-        fd.append('countInStock', form.countInStock || 0);
-        if (file) fd.append('image', file);
+        setLoading(true);
 
         try {
+            const fd = new FormData();
+            fd.append("name", form.name);
+            fd.append("price", form.price);
+            fd.append(
+                "colors",
+                JSON.stringify(
+                    form.colors
+                        .split(",")
+                        .map((c) => c.trim())
+                        .filter(Boolean)
+                )
+            );
+            fd.append("countInStock", form.countInStock);
+
+            if (file) fd.append("image", file);
+
             if (editingId) {
-                await API.put(`/admin/product/${editingId}`, fd);
-                setEditingId(null);
+                // UPDATE
+                await API.put(`/admin/products/${editingId}`, fd);
+                alert("Product updated successfully");
             } else {
-                await API.post('/admin/product', fd);
+                // CREATE
+                await API.post("/admin/products", fd);
+                alert("Product added successfully");
             }
 
-            setForm({});
-            setFile(null);
+            resetForm();
             loadProducts();
-            alert('Saved!');
         } catch (err) {
-            console.log("SAVE ERROR:", err.response?.data || err);
+            console.error("SAVE ERROR:", err.response?.data || err);
             alert(err.response?.data?.message || "Something went wrong");
+        } finally {
+            setLoading(false);
         }
     };
 
+    // =========================
+    // EDIT PRODUCT
+    // =========================
     const editProduct = (p) => {
-        setForm(p);
+        setForm({
+            name: p.name || "",
+            price: p.price || "",
+            colors: Array.isArray(p.colors) ? p.colors.join(", ") : p.colors || "",
+            countInStock: p.countInStock || "",
+        });
+
+        setFile(null);
         setEditingId(p._id);
+
+        window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
+    // =========================
+    // DELETE PRODUCT
+    // =========================
     const deleteProduct = async (id) => {
         if (!window.confirm("Are you sure you want to delete this product?")) return;
 
         try {
-            const res = await API.delete(`/admin/product/${id}`);
-            console.log("DELETE SUCCESS:", res.data);
+            await API.delete(`/admin/products/${id}`);
+            alert("Product deleted");
             loadProducts();
         } catch (err) {
-            console.log("DELETE ERROR:", err.response?.data || err);
-            alert(err.response?.data?.message || "Delete failed! Check backend API route.");
+            console.error("DELETE ERROR:", err.response?.data || err);
+            alert(err.response?.data?.message || "Delete failed");
         }
+    };
+
+    // =========================
+    // RESET FORM
+    // =========================
+    const resetForm = () => {
+        setForm({
+            name: "",
+            price: "",
+            colors: "",
+            countInStock: "",
+        });
+        setFile(null);
+        setEditingId(null);
     };
 
     return (
         <div className="products-container">
+            {/* ================= FORM ================= */}
             <h2 className="page-title">
                 {editingId ? "Edit Product" : "Add New Product"}
             </h2>
 
-            {/* FORM */}
             <form className="product-form" onSubmit={submitProduct}>
                 <div className="form-row">
                     <input
                         type="text"
-                        placeholder="Name"
-                        value={form.name || ''}
+                        placeholder="Product Name"
+                        value={form.name}
                         onChange={(e) => setForm({ ...form, name: e.target.value })}
                         required
                     />
+
                     <input
                         type="number"
                         placeholder="Price"
-                        value={form.price || ''}
+                        value={form.price}
                         onChange={(e) => setForm({ ...form, price: e.target.value })}
                         required
                     />
@@ -95,52 +150,78 @@ export default function Products() {
                 <div className="form-row">
                     <input
                         type="text"
-                        placeholder="Colors (comma separated)"
-                        value={form.colors || ''}
+                        placeholder="Colors (red, blue, black)"
+                        value={form.colors}
                         onChange={(e) => setForm({ ...form, colors: e.target.value })}
                     />
+
                     <input
                         type="number"
                         placeholder="Stock"
-                        value={form.countInStock || ''}
-                        onChange={(e) => setForm({ ...form, countInStock: e.target.value })}
+                        value={form.countInStock}
+                        onChange={(e) =>
+                            setForm({ ...form, countInStock: e.target.value })
+                        }
                     />
                 </div>
 
                 <div className="form-row">
-                    <input
-                        type="file"
-                        onChange={(e) => setFile(e.target.files[0])}
-                    />
+                    <input type="file" onChange={(e) => setFile(e.target.files[0])} />
                 </div>
 
-                <button className="btn-submit">
-                    {editingId ? "Update Product" : "Add Product"}
+                <button className="btn-submit" type="submit" disabled={loading}>
+                    {loading
+                        ? "Saving..."
+                        : editingId
+                            ? "Update Product"
+                            : "Add Product"}
                 </button>
+
+                {editingId && (
+                    <button
+                        type="button"
+                        className="btn-cancel"
+                        onClick={resetForm}
+                    >
+                        Cancel Edit
+                    </button>
+                )}
             </form>
 
-            {/* PRODUCT LIST */}
+            {/* ================= LIST ================= */}
             <h2 className="page-title">Products List</h2>
 
             <div className="products-grid">
                 {products.map((p) => (
                     <div className="product-card" key={p._id}>
                         <img
-                            src={p.image || 'https://via.placeholder.com/150'}
+                            src={p.image || "https://via.placeholder.com/150"}
                             alt={p.name}
                             className="product-img"
                         />
 
                         <div className="product-info">
                             <h3>{p.name}</h3>
-                            <p>Price: <strong>₹{p.price}</strong></p>
+                            <p>
+                                Price: <strong>₹{p.price}</strong>
+                            </p>
                             <p>Stock: {p.countInStock}</p>
-                            <p>Colors: {p.colors}</p>
+                            <p>
+                                Colors:{" "}
+                                {Array.isArray(p.colors) ? p.colors.join(", ") : p.colors}
+                            </p>
                         </div>
 
                         <div className="product-actions">
-                            <button className="btn-edit" onClick={() => editProduct(p)}>Edit</button>
-                            <button className="btn-delete" onClick={() => deleteProduct(p._id)}>Delete</button>
+                            <button className="btn-edit" onClick={() => editProduct(p)}>
+                                Edit
+                            </button>
+                            <button
+                                className="btn-delete"
+                                onClick={() => deleteProduct(p._id)}
+                            >
+                                Delete
+                            </button>
                         </div>
                     </div>
                 ))}

@@ -44,7 +44,16 @@
     cursor: pointer;
     transition: all 0.2s;
 }
-
+.btn-cancel {
+    padding: 12px 25px;
+    background-color: #007bff;
+    border: none;
+    color: #fff;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
 .btn-submit:hover {
     background-color: #0056b3;
 }

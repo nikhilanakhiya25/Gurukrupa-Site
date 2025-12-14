@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
 import API from "../../api/api";
+import {
+    Package,
+    Users,
+    ShoppingCart,
+    IndianRupee,
+} from "lucide-react";
 import "./AdminPanels.css";
 
 const Dashboard = () => {
@@ -14,171 +20,166 @@ const Dashboard = () => {
         fetchOrders();
     }, []);
 
-    // ---------------- FETCH PRODUCTS ----------------
+    // ✅ PRODUCTS → /api/products
     const fetchProducts = async () => {
         try {
             const res = await API.get("/products");
-
-            const productArr =
-                Array.isArray(res.data)
-                    ? res.data
-                    : res.data.products || res.data.data || [];
-
-            setProducts(productArr);
-        } catch (error) {
-            console.log("Product Fetch Error:", error);
+            setProducts(res.data.products || res.data || []);
+        } catch (err) {
+            console.log("Products:", err.response?.data || err.message);
         }
     };
 
-    // ---------------- FETCH USERS ----------------
+    // ✅ USERS → /api/user
     const fetchUsers = async () => {
         try {
-            const res = await API.get("/users");
-
-            const userArr =
-                Array.isArray(res.data)
-                    ? res.data
-                    : res.data.users || res.data.data || [];
-
-            setUsers(userArr);
-        } catch (error) {
-            console.log("User Fetch Error:", error);
+            const res = await API.get("/user");
+            setUsers(res.data.users || res.data || []);
+        } catch (err) {
+            console.log("Users:", err.response?.data || err.message);
         }
     };
 
-    // ---------------- FETCH ORDERS ----------------
+    // ✅ ORDERS → /api/orders
     const fetchOrders = async () => {
         try {
             const res = await API.get("/orders");
+            const data = res.data.orders || res.data || [];
+            setOrders(data);
 
-            const orderArr =
-                Array.isArray(res.data)
-                    ? res.data
-                    : res.data.orders || res.data.data || [];
-
-            setOrders(orderArr);
-
-            const sales = orderArr.reduce(
-                (sum, order) =>
-                    sum + Number(order.totalAmount || order.totalPrice || 0),
+            const total = data.reduce(
+                (sum, o) => sum + Number(o.totalPrice || o.totalAmount || 0),
                 0
             );
-
-            setTotalSales(sales);
-        } catch (error) {
-            console.log("Order Fetch Error:", error);
+            setTotalSales(total);
+        } catch (err) {
+            console.log("Orders:", err.response?.data || err.message);
         }
     };
 
     return (
         <div className="dashboard">
-            <button onClick={() => window.history.back()} className="back-btn">
-                ⬅ Back
-            </button>
+            <h2 className="page-title">Admin Dashboard</h2>
 
-            <h2>📊 Dashboard Overview</h2>
+            {/* ===== SUMMARY CARDS ===== */}
+            <div className="stats-grid">
+                <div className="stat-card blue">
+                    <Package />
+                    <div>
+                        <h3>{products.length}</h3>
+                        <p>Products</p>
+                    </div>
+                </div>
 
-            {/* Summary Cards */}
-            <div className="stats">
-                <div className="card">Products <h3>{products.length}</h3></div>
-                <div className="card">Users <h3>{users.length}</h3></div>
-                <div className="card">Orders <h3>{orders.length}</h3></div>
-                <div className="card">Total Sales <h3>₹ {totalSales}</h3></div>
+                <div className="stat-card green">
+                    <Users />
+                    <div>
+                        <h3>{users.length}</h3>
+                        <p>Users</p>
+                    </div>
+                </div>
+
+                <div className="stat-card orange">
+                    <ShoppingCart />
+                    <div>
+                        <h3>{orders.length}</h3>
+                        <p>Orders</p>
+                    </div>
+                </div>
+
+                <div className="stat-card purple">
+                    <IndianRupee />
+                    <div>
+                        <h3>₹ {totalSales}</h3>
+                        <p>Total Sales</p>
+                    </div>
+                </div>
             </div>
 
-            {/* ---------------- PRODUCTS TABLE ---------------- */}
-            <h3>📦 All Products</h3>
-            <table className="table">
-                <thead>
-                    <tr>
-                        <th>Image</th>
-                        <th>Name</th>
-                        <th>Price</th>
-                        <th>Stock</th>
-                        <th>Colors</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {products.length ? (
-                        products.map((p) => (
+            {/* ===== PRODUCTS ===== */}
+            <section className="table-section">
+                <h3>📦 Products</h3>
+                <table className="modern-table">
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Name</th>
+                            <th>Price</th>
+                            <th>Stock</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {products.map((p) => (
                             <tr key={p._id}>
-                                <td><img src={p.image} alt="" width="50" /></td>
+                                <td><img src={p.image} alt={p.name} /></td>
                                 <td>{p.name}</td>
                                 <td>₹ {p.price}</td>
-                                <td>{p.countInStock || p.stock}</td>
                                 <td>
-                                    {Array.isArray(p.colors)
-                                        ? p.colors.join(", ")
-                                        : p.color || "-"}
+                                    <span className={`badge ${p.countInStock > 0 ? "success" : "danger"}`}>
+                                        {p.countInStock > 0 ? "In Stock" : "Out"}
+                                    </span>
                                 </td>
                             </tr>
-                        ))
-                    ) : (
-                        <tr><td colSpan="5">No Products Found</td></tr>
-                    )}
-                </tbody>
-            </table>
+                        ))}
+                    </tbody>
+                </table>
+            </section>
 
-            {/* ---------------- USERS TABLE ---------------- */}
-            <h3>👤 All Users</h3>
-            <table className="table">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Phone</th>
-                        <th>Role</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    {users.length ? (
-                        users.map((u) => (
+            {/* ===== USERS ===== */}
+            <section className="table-section">
+                <h3>👤 Users</h3>
+                <table className="modern-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {users.map((u) => (
                             <tr key={u._id}>
-                                <td>{u.name || "-"}</td>
-                                <td>{u.email || "-"}</td>
-                                <td>{u.phone || "-"}</td>
+                                <td>{u.name}</td>
+                                <td>{u.email}</td>
                                 <td>
-                                    {u.role
-                                        ? u.role
-                                        : u.isAdmin
-                                            ? "admin"
-                                            : "user"}
+                                    <span className={`badge ${u.isAdmin ? "admin" : "user"}`}>
+                                        {u.isAdmin ? "Admin" : "User"}
+                                    </span>
                                 </td>
                             </tr>
-                        ))
-                    ) : (
-                        <tr><td colSpan="4">No Users Found</td></tr>
-                    )}
-                </tbody>
-            </table>
+                        ))}
+                    </tbody>
+                </table>
+            </section>
 
-            {/* ---------------- ORDERS TABLE ---------------- */}
-            <h3>📄 All Orders</h3>
-            <table className="table">
-                <thead>
-                    <tr>
-                        <th>Order ID</th>
-                        <th>User</th>
-                        <th>Total</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {orders.length ? (
-                        orders.map((o) => (
+            {/* ===== ORDERS ===== */}
+            <section className="table-section">
+                <h3>📄 Orders</h3>
+                <table className="modern-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>User</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {orders.map((o) => (
                             <tr key={o._id}>
                                 <td>{o._id.slice(-6)}</td>
-                                <td>{o.user?.name || "Unknown"}</td>
-                                <td>₹ {o.totalAmount || o.totalPrice || 0}</td>
-                                <td>{o.status || "Pending"}</td>
+                                <td>{o.user?.name || "Guest"}</td>
+                                <td>₹ {o.totalAmount}</td>
+                                <td>
+                                    <span className="badge warning">
+                                        {o.status || "Pending"}
+                                    </span>
+                                </td>
                             </tr>
-                        ))
-                    ) : (
-                        <tr><td colSpan="4">No Orders Found</td></tr>
-                    )}
-                </tbody>
-            </table>
+                        ))}
+                    </tbody>
+                </table>
+            </section>
         </div>
     );
 };

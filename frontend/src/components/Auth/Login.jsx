@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { useAuth } from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
 import API from "../../api/api";
 import "./login.css";
 
@@ -10,37 +10,42 @@ export default function LoginPage() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("user");  // ⭐ NEW
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!email.trim() || !password.trim()) {
-      alert("Please enter email and password.");
+    if (!email || !password) {
+      alert("Email and password required");
       return;
     }
 
     try {
+      setLoading(true);
+
+      // ✅ FINAL CORRECT API CALL
       const res = await API.post("/auth/login", {
         email,
         password,
-        role, // ⭐ send role to backend
       });
 
       const { token, user } = res.data;
 
-      // Save user + token
+      // Save auth data
       login(user, token);
 
-      // Redirect based on role
-      if (user.role === "admin") {
-        navigate("/admin");
+      // Redirect
+      if (user?.isAdmin) {
+        navigate("/admin/dashboard");
       } else {
         navigate("/");
       }
 
     } catch (err) {
+      console.error(err);
       alert(err.response?.data?.message || "Login failed");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -48,11 +53,10 @@ export default function LoginPage() {
     <div className="login-container">
       <div className="login-card">
         <h2>🔐 Login</h2>
-        <p className="subtitle">Welcome back! Please login.</p>
+        <p className="subtitle">Login to continue</p>
 
         <form onSubmit={handleSubmit} className="login-form">
 
-          {/* Email */}
           <div className="form-group">
             <label>Email</label>
             <input
@@ -60,10 +64,10 @@ export default function LoginPage() {
               placeholder="Enter email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              required
             />
           </div>
 
-          {/* Password */}
           <div className="form-group">
             <label>Password</label>
             <input
@@ -71,20 +75,12 @@ export default function LoginPage() {
               placeholder="Enter password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              required
             />
           </div>
 
-          {/* ⭐ ROLE SELECT */}
-          <div className="form-group">
-            <label>Select Role</label>
-            <select value={role} onChange={(e) => setRole(e.target.value)}>
-              <option value="user">User</option>
-              <option value="admin">Admin</option>
-            </select>
-          </div>
-
-          <button className="login-btn" type="submit">
-            Login as {role}
+          <button className="login-btn" type="submit" disabled={loading}>
+            {loading ? "Logging in..." : "Login"}
           </button>
         </form>
 

@@ -1,82 +1,72 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import API from '../../api/api';
-import './Signup.css';
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import API from "../../api/api";
+import "./Signup.css";
 
 export default function Signup() {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  async function submit(e) {
+  const submit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
-      // Create user in backend
-      const { data } = await API.post('/auth/signup', {
+      await API.post("/api/auth/signup", {
         name,
         email,
         password,
-        username: email,  // IMPORTANT 🔥 make email = username
-        role: "user"      // new users are always normal users
       });
 
-      // Auto-login user after signup
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
-
-      // Set token for all API requests
-      API.defaults.headers.common['Authorization'] = 'Bearer ' + data.token;
-
-      // Redirect to home
-      navigate('/');
+      alert("Signup successful! Please login.");
+      navigate("/login"); // ✅ redirect to login
     } catch (err) {
-      alert(err.response?.data?.message || err.message);
+      alert(err.response?.data?.message || "Signup failed");
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="auth-wrapper">
-      <form onSubmit={submit} className="auth-card">
+      <form className="auth-card" onSubmit={submit}>
         <h2>Create Account</h2>
-        <p className="subtitle">Join us today</p>
+        <p className="subtitle">Sign up to continue</p>
 
-        <div className="input-group">
-          <label>Name</label>
-          <input
-            type="text"
-            placeholder="Enter your name"
-            value={name}
-            onChange={e => setName(e.target.value)}
-          />
-        </div>
+        <input
+          type="text"
+          placeholder="Full Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          required
+        />
 
-        <div className="input-group">
-          <label>Email</label>
-          <input
-            type="email"
-            placeholder="Enter your email"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-          />
-        </div>
+        <input
+          type="email"
+          placeholder="Email Address"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
 
-        <div className="input-group">
-          <label>Password</label>
-          <input
-            type="password"
-            placeholder="Create a password"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-          />
-        </div>
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
 
-        <button className="btn-submit">Signup</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "Creating..." : "Create Account"}
+        </button>
 
-        <div className="extra-links">
-          <a href="/login">Already have an account? Login</a>
-        </div>
+        <p className="switch-auth">
+          Already have an account? <Link to="/login">Login</Link>
+        </p>
       </form>
     </div>
   );

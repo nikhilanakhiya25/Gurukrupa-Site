@@ -1,51 +1,61 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import ProductCard from "./ProductCard";
 import Footer from "./Footer";
+import API from "../api/api";
 import "./HomePage.css";
 
-const Profile = () => {
+export default function HomePage() {
   const { user } = useAuth();
 
-  return <h2>Logged in user: {user?.name}</h2>;
-};
+  // 🛒 State for DB products
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
+  // 🔹 Featured Product
+  const featuredProduct = {
+    _id: "f1",
+    name: "Customize Photo Frame",
+    price: "750",
+    image:
+      "https://content3.jdmagicbox.com/comp/ahmedabad/b6/079pxx79.xx79.210629124021.b9b6/catalogue/gurukrupa-gift-article-shahibaug-ahmedabad-gift-shops-du0hrs91la.jpg",
+    description: "Heart-shaped wooden photo frame",
+  };
 
+  // ---------------- LOAD PRODUCTS FROM DB ----------------
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const res = await API.get("/products");
+        const data = res.data.products || res.data;
+        setProducts(data.slice(0, 5)); // show top 8 products
+      } catch (err) {
+        console.error("FETCH PRODUCTS ERROR:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-const featuredProduct = {
-  _id: "f1",
-  name: "Customize Photo Frame",
-  price: "750",
-  image: "https://content3.jdmagicbox.com/comp/ahmedabad/b6/079pxx79.xx79.210629124021.b9b6/catalogue/gurukrupa-gift-article-shahibaug-ahmedabad-gift-shops-du0hrs91la.jpg",
-  description: "Heart-shaped wooden photo fram"
-};
-
-const otherProducts = Array.from({ length: 4 }).map((_, i) => ({
-  _id: `p${i + 1}`,
-  name: `Wooden Decor ${i + 1}`,
-  price: (40 + i * 10).toFixed(2),
-  image: `https://picsum.photos/300?random=${i + 10}`,
-}));
-
-export default function HomePage() {
-  const { user, logout } = useAuth();
+    loadProducts();
+  }, []);
 
   return (
     <div className="homepage-container">
-
-      {/* 🔥 Banner */}
+      {/* 🔥 Hero Banner */}
       <section className="hero-banner">
         <div className="hero-text">
           <h1>Premium Gifts for Every Occasion</h1>
-          <p>Unique wooden décor, personalized designs, and handcrafted gift articles.</p>
-          <button className="shop-now-btn" >Shop Now</button>
+          <p>
+            Unique wooden décor, personalized designs, and handcrafted gift articles.
+          </p>
+          <button className="shop-now-btn">Shop Now</button>
         </div>
       </section>
 
       {/* ⭐ Featured Product */}
       <section className="highlight-product">
         <div className="highlight-image">
-          <img src={featuredProduct.image} alt="Featured Product" />
+          <img src={featuredProduct.image} alt={featuredProduct.name} />
         </div>
 
         <div className="highlight-text">
@@ -56,18 +66,22 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 🛍 Other Products */}
+      {/* 🛍 Products Section */}
       <section className="product-section">
         <h2>Top Picks For You</h2>
+
+        {loading && <p>Loading products...</p>}
+        {!loading && products.length === 0 && <p>No products found</p>}
+
         <div className="product-grid">
-          {otherProducts.map((product) => (
-            <ProductCard key={product._id} product={product} />
-          ))}
+          {!loading &&
+            products.map((product) => (
+              <ProductCard key={product._id} product={product} />
+            ))}
         </div>
       </section>
 
       <Footer />
     </div>
   );
-  // export default Profile;
 }

@@ -1,29 +1,46 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
-import API from "../api/api";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect
+} from "react";
 
 const AuthContext = createContext();
+
 export const useAuth = () => useContext(AuthContext);
 
-export const AuthProvider = ({ children }) => {
+export const AuthProvider = ({
+  children
+}) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // Load from localStorage
+  // 🔹 Load auth from localStorage
   useEffect(() => {
-    const savedUser = localStorage.getItem("user");
-    const savedToken = localStorage.getItem("token");
+    try {
+      const savedUser = localStorage.getItem("user");
+      const savedToken = localStorage.getItem("token");
 
-    if (savedUser && savedToken) {
-      setUser(JSON.parse(savedUser));
-      setToken(savedToken);
+      if (savedUser && savedToken) {
+        setUser(JSON.parse(savedUser));
+        setToken(savedToken);
+      }
+    } catch (err) {
+      console.error("Auth load error:", err);
+      localStorage.clear();
+    } finally {
+      setLoading(false);
     }
   }, []);
 
-  // ⭐ FIXED LOGIN — accepts (user, token)
+  // 🔐 LOGIN (ONLY FOR AUTH)
   const login = (userData, tokenData) => {
+    if (!userData || !tokenData) return;
+
     const normalizedUser = {
       ...userData,
-      role: userData.role?.toLowerCase(), // ⭐ ensures lowercase
+      role: userData.role?.toLowerCase() || "user",
     };
 
     setUser(normalizedUser);
@@ -33,16 +50,36 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem("token", tokenData);
   };
 
+  // 🚪 LOGOUT
   const logout = () => {
     setUser(null);
     setToken(null);
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
+    localStorage.clear();
+  };
+
+  // 🛠 SAFE PROFILE UPDATE (username, avatar, etc.)
+  const updateUser = (updates) => {
+    setUser((prev) => {
+      if (!prev) return prev;
+      const updatedUser = {
+        ...prev,
+        ...updates
+      };
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+      return updatedUser;
+    });
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, logout }}>
-      {children}
+    <AuthContext.Provider value={{
+      user,
+      token,
+      loading,
+      login,
+      logout,
+      setUser: updateUser, // ✅ SAFE setter
+    }}>
+    {!loading && children}
     </AuthContext.Provider>
   );
 };

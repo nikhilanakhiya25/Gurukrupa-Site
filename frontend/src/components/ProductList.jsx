@@ -15,7 +15,7 @@ export default function ProductList() {
   const [price, setPrice] = useState(1000);
 
   useEffect(() => {
-    API.get('/api/products')
+    API.get('/products')
       .then(res => {
         const list = res.data.products || res.data;
         setProducts(list);
@@ -67,7 +67,11 @@ export default function ProductList() {
         <div className="filter-box">
           <label>Category</label>
           <select value={category} onChange={e => setCategory(e.target.value)}>
-            {categories.map(c => <option key={c}>{c}</option>)}
+          {categories.map((cat, index) => (
+    <option key={cat || index} value={cat}>
+      {cat}
+    </option>
+  ))}
           </select>
         </div>
 
@@ -76,7 +80,7 @@ export default function ProductList() {
           <input
             type="range"
             min="0"
-            max="1000"
+            max="10000"
             value={price}
             onChange={e => setPrice(Number(e.target.value))}
           />

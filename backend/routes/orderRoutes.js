@@ -1,25 +1,26 @@
-// backend/routes/orderRoutes.js
 const express = require("express");
 const router = express.Router();
-const orderController = require("../controllers/orderController");
-const auth = require("../middleware/auth"); // expects exported protect & admin
+const orderController = require("../controller/orderController");
+const auth = require("../middleware/auth");
+
+const { protect, admin } = auth;
 
 // Create order (POST /api/orders)
-router.post("/", auth.protect, orderController.createOrder);
+router.post("/", protect, orderController.createOrder);
 
 // Get orders of logged-in user (GET /api/orders/my)
-router.get("/my", auth.protect, orderController.getMyOrders);
+router.get("/my", protect, orderController.getMyOrders);
 
 // Admin: get all orders (GET /api/orders)
-router.get("/", auth.protect, orderController.getAllOrders);
+router.get("/", protect, admin, orderController.getAllOrders);
 
 // Update order status (PUT /api/orders/:id/status)
-router.put("/:id/status", auth.protect, auth.admin, orderController.updateStatus);
+router.put("/:id/status", protect, admin, orderController.updateStatus);
 
 // Admin: send tracking message (POST /api/orders/:id/track)
-router.post("/:id/track", auth.protect, auth.admin, orderController.sendTrackingMessage);
+router.post("/:id/track", protect, admin, orderController.sendTrackingMessage);
 
 // Invoice download (GET /api/orders/:id/invoice)
-router.get("/:id/invoice", auth.protect, orderController.getInvoice);
+router.get("/:id/invoice", protect, orderController.getInvoice);
 
 module.exports = router;

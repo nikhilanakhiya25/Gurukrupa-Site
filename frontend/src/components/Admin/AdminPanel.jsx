@@ -1,31 +1,61 @@
-import React from 'react';
-import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
-import './AdminPanels.css';
+import React from "react";
+import { Outlet, NavLink, useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
+import {
+  LayoutDashboard,
+  Package,
+  ShoppingCart,
+  Settings,
+  LogOut,
+  User
+} from "lucide-react";
+import "./AdminPanels.css";
 
 export default function AdminPanel() {
-  const location = useLocation();
+  const { logout } = useAuth();
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
 
   const handleLogout = () => {
     logout();
-    navigate('/');
+    navigate("/");
   };
 
   return (
-      <div className="admin-main">
-        <div className="sidebar">
-          <h2 class="AdminName">Admin Panel</h2>
-          <Link to="/admin/dashboard" className={location.pathname === '/admin/dashboard' ? 'active' : ''}>Dashboard</Link>
-          <Link to="/admin/products" className={location.pathname === '/admin/products' ? 'active' : ''}>Products</Link>
-          <Link to="/admin/orders" className={location.pathname === '/admin/orders' ? 'active' : ''}>Orders</Link>
-          <Link to="/admin/settings" className={location.pathname === '/admin/settings' ? 'active' : ''}>Settings</Link>
+    <div className="admin-layout">
+      {/* SIDEBAR */}
+      <aside className="sidebar">
+        <div className="sidebar-header">
+          <User size={32} />
+          <h2>Admin Panel</h2>
         </div>
-        <div className="main-content">
-          <Outlet />
-        </div>
-      </div>
-    
+
+        <nav className="menu">
+          <NavLink to="/admin/dashboard" className="menu-item">
+            <LayoutDashboard size={18} /> Dashboard
+          </NavLink>
+
+          <NavLink to="/admin/products" className="menu-item">
+            <Package size={18} /> Products
+          </NavLink>
+
+          <NavLink to="/admin/orders" className="menu-item">
+            <ShoppingCart size={18} /> Orders
+          </NavLink>
+
+          <NavLink to="/admin/settings" className="menu-item">
+            <Settings size={18} /> Settings
+          </NavLink>
+        </nav>
+
+        <button className="logout-btn" onClick={handleLogout}>
+          <LogOut size={18} /> Logout
+        </button>
+      </aside>
+
+      {/* MAIN CONTENT */}
+      <main className="admin-content">
+        <Outlet />
+      </main>
+    </div>
   );
 }

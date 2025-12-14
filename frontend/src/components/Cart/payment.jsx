@@ -11,9 +11,9 @@ export default function Payment() {
 
     const [selectedMethod, setSelectedMethod] = useState("COD");
     const [confirmPopup, setConfirmPopup] = useState(false);
-    const [successPopup, setSuccessPopup] = useState(false);
     const [shippingDetails, setShippingDetails] = useState(null);
 
+    // 🔹 Load shipping details
     useEffect(() => {
         const saved = JSON.parse(localStorage.getItem("shippingDetails"));
         if (!saved) {
@@ -21,28 +21,50 @@ export default function Payment() {
             return;
         }
         setShippingDetails(saved);
-    }, []);
+    }, [navigate]);
 
-    const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+    // 🔹 Calculate total
+    const totalPrice = cart.reduce(
+        (sum, item) => sum + item.price * item.qty,
+        0
+    );
 
+    // 🔹 PLACE ORDER (FIXED)
     const placeOrder = async () => {
         try {
+            // ✅ CREATE orderData (THIS WAS MISSING)
+            const orderData = {
+                orderItems: cart.map((item) => ({
+                    product: item._id,
+                    name: item.name,
+                    price: item.price,
+                    qty: item.qty,
+                    image: item.image,
+                })),
+                shippingAddress: shippingDetails,
+                paymentMethod: selectedMethod,
+                totalPrice,
+            };
+
             console.log("📦 Sending Order:", orderData);
 
-            const res = await API.post("/api/orders", orderData);
+            // ✅ baseURL already has /api → DO NOT add /api again
+            const res = await API.post("/", orderData);
 
             console.log("✅ ORDER SUCCESS:", res.data);
 
-            toast.success("Order Placed Successfully!");
-            navigate("/order-success/" + res.data._id);
+            clearCart();
+            localStorage.removeItem("shippingDetails");
 
+            navigate("/order-success/" + res.data._id);
         } catch (error) {
             console.error("❌ ORDER ERROR:", error.response?.data || error.message);
-
-            alert("Order failed: " + (error.response?.data?.message || "Unknown error"));
+            alert(
+                "Order failed: " +
+                (error.response?.data?.message || "Unknown error")
+            );
         }
     };
-
 
     return (
         <div className="payment-page">
@@ -50,7 +72,8 @@ export default function Payment() {
 
             <div className="payment-box">
                 <div
-                    className={`payment-option ${selectedMethod === "COD" ? "active" : ""}`}
+                    className={`payment-option ${selectedMethod === "COD" ? "active" : ""
+                        }`}
                     onClick={() => setSelectedMethod("COD")}
                 >
                     Cash on Delivery (COD)
@@ -68,30 +91,16 @@ export default function Payment() {
                 <div className="popup-overlay">
                     <div className="popup-box">
                         <h3>Confirm Order?</h3>
-                        <p>Your order will be placed and visible in Admin Panel.</p>
+                        <p>Your order will be placed successfully.</p>
                         <div className="popup-actions">
-                            <button className="cancel-btn" onClick={() => setConfirmPopup(false)}>Cancel</button>
-                            <button className="place-btn" onClick={placeOrder}>Place Order</button>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {successPopup && (
-                <div className="popup-overlay">
-                    <div className="popup-box success">
-                        <h3>🎉 Order Placed Successfully!</h3>
-                        <p>Your order is now visible in the Admin Panel.</p>
-                        <div className="popup-actions">
-                            <button className="cancel-btn" onClick={() => setSuccessPopup(false)}>Close</button>
                             <button
-                                className="place-btn"
-                                onClick={() => {
-                                    setSuccessPopup(false);
-                                    navigate("/");
-                                }}
+                                className="cancel-btn"
+                                onClick={() => setConfirmPopup(false)}
                             >
-                                Continue Shopping
+                                Cancel
+                            </button>
+                            <button className="place-btn" onClick={placeOrder}>
+                                Place Order
                             </button>
                         </div>
                     </div>

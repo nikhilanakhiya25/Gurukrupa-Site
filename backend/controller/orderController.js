@@ -1,10 +1,9 @@
-// backend/controllers/orderController.js
 const Order = require("../models/Order");
 const mongoose = require("mongoose");
 const twilio = require("twilio");
 const PDFDocument = require("pdfkit");
 
-// Twilio client (created lazily — safe if env not set)
+// Twilio initialization (lazy)
 let twilioClient = null;
 const getTwilioClient = () => {
     if (!twilioClient) {
@@ -22,28 +21,21 @@ const getTwilioClient = () => {
     return twilioClient;
 };
 
-const SMS_FROM = process.env.TWILIO_SMS; // e.g. "+1...."
+const SMS_FROM = process.env.TWILIO_SMS;
 const WHATSAPP_FROM = process.env.TWILIO_WHATSAPP || "whatsapp:+14155238886";
 
-// Utility: normalize items array
-function normalizeItems(incomingItems) {
-    return incomingItems.map((it) => {
-        const product = it.product || it.productId || it._id || null;
-        const name = it.name || it.title || "";
-        const image = it.image || it.img || "";
-        const qty = Number(it.qty || it.quantity || it.count || 1);
-        const price = Number(it.price || it.unitPrice || 0);
-        return {
-            product,
-            name,
-            image,
-            qty,
-            price
-        };
-    });
+// Normalize cart items
+function normalizeItems(items) {
+    return items.map((it) => ({
+        product: it.product || it.productId || it._id,
+        name: it.name || it.title || "",
+        image: it.image || it.img || "",
+        qty: Number(it.qty || it.quantity || 1),
+        price: Number(it.price || it.unitPrice || 0)
+    }));
 }
 
-// Utility: normalize shipping address
+// Normalize shipping address
 function normalizeShipping(s) {
     if (!s) return null;
     if (typeof s === "string") {
@@ -55,26 +47,24 @@ function normalizeShipping(s) {
             pincode: ""
         };
     }
+
     return {
-        fullName: s.fullName || s.name || s.full_name || "Customer",
-        phone: s.phone || s.mobile || s.contact || null,
-        address: s.address || s.line1 || "",
-        city: s.city || s.town || "",
-        pincode: s.pincode || s.postalCode || s.postal_code || ""
+        fullName: s.fullName || s.name || "Customer",
+        phone: s.phone || s.mobile || s.contact,
+        address: s.address || "",
+        city: s.city || "",
+        pincode: s.pincode || s.postalCode
     };
 }
 
-// ------------------ Create Order ------------------
+// --------------------------------- CREATE ORDER ---------------------------------
 exports.createOrder = async (req, res) => {
     try {
-        // ensure auth
-        if (!req.user || !req.user.id) {
+        if (!req.user || !req.user.id)
             return res.status(401).json({
                 message: "Not authorized"
             });
-        }
 
-        // accept various field names from frontend
         let {
             items,
             orderItems,
@@ -84,56 +74,52 @@ exports.createOrder = async (req, res) => {
             paymentMethod
         } = req.body;
 
-        const incoming = Array.isArray(items) ? items : (Array.isArray(orderItems) ? orderItems : []);
-        if (!incoming || incoming.length === 0) {
+        const incoming = Array.isArray(items) ?
+            items :
+            Array.isArray(orderItems) ?
+            orderItems :
+            [];
+
+        if (!incoming.length)
             return res.status(400).json({
                 message: "Cart is empty"
             });
-        }
 
         const normalizedItems = normalizeItems(incoming);
 
-        // validate product ids
+        // Validate product IDs
         for (const it of normalizedItems) {
-            if (!it.product) return res.status(400).json({
-                message: "Product ID missing in an item"
-            });
-            if (!mongoose.Types.ObjectId.isValid(String(it.product))) {
+            if (!it.product)
                 return res.status(400).json({
-                    message: `Invalid product id: ${it.product}`
+                    message: "Product ID missing"
                 });
-            }
+
+            if (!mongoose.Types.ObjectId.isValid(String(it.product)))
+                return res.status(400).json({
+                    message: "Invalid product ID"
+                });
         }
 
         const finalShipping = normalizeShipping(shippingAddress);
         if (!finalShipping) return res.status(400).json({
-            message: "Shipping address missing"
+            message: "Shipping missing"
         });
 
-        // require phone so Twilio works; if you don't want to require, remove this check
-        if (!finalShipping.phone) {
+        if (!finalShipping.phone)
             return res.status(400).json({
-                message: "Phone number missing in shipping address"
+                message: "Phone number required"
             });
-        }
 
-        const finalTotal = (totalAmount || totalPrice);
-        if (finalTotal === undefined || finalTotal === null) {
+        const finalTotal = totalAmount || totalPrice;
+        if (finalTotal == null)
             return res.status(400).json({
                 message: "Total amount missing"
             });
-        }
 
         const order = new Order({
             user: req.user.id,
             items: normalizedItems,
-            shippingAddress: {
-                fullName: finalShipping.fullName,
-                phone: finalShipping.phone,
-                address: finalShipping.address,
-                city: finalShipping.city,
-                pincode: finalShipping.pincode
-            },
+            shippingAddress: finalShipping,
             totalAmount: Number(finalTotal),
             paymentMethod: paymentMethod || "COD",
             status: "Pending"
@@ -141,9 +127,9 @@ exports.createOrder = async (req, res) => {
 
         const savedOrder = await order.save();
 
-        // send confirmation SMS/WhatsApp (best-effort)
-        const phone = finalShipping.phone;
+        // Send SMS/WhatsApp
         const client = getTwilioClient();
+        const phone = finalShipping.phone;
         const msg = `Hello ${finalShipping.fullName}, your order (${savedOrder._id}) has been placed. Total: ₹${savedOrder.totalAmount}. Thank you!`;
 
         if (client && SMS_FROM && phone) {
@@ -153,7 +139,8 @@ exports.createOrder = async (req, res) => {
                     to: phone,
                     body: msg
                 });
-                // try whatsapp too (optional)
+
+                // WhatsApp fallback
                 try {
                     await client.messages.create({
                         from: WHATSAPP_FROM,
@@ -161,10 +148,10 @@ exports.createOrder = async (req, res) => {
                         body: msg
                     });
                 } catch (e) {
-                    console.warn("WhatsApp send failed:", e.message);
+                    console.warn("WhatsApp failed:", e.message);
                 }
             } catch (e) {
-                console.warn("SMS send failed:", e.message);
+                console.warn("SMS failed:", e.message);
             }
         }
 
@@ -175,17 +162,19 @@ exports.createOrder = async (req, res) => {
     } catch (err) {
         console.error("ORDER CREATE ERROR:", err);
         return res.status(500).json({
-            message: err.message || "Server error"
+            message: err.message
         });
     }
 };
 
-// ------------------ Get logged-in user's orders ------------------
+// --------------------------------- USER ORDERS ---------------------------------
 exports.getMyOrders = async (req, res) => {
     try {
-        if (!req.user || !req.user.id) return res.status(401).json({
-            message: "Not authorized"
-        });
+        if (!req.user || !req.user.id)
+            return res.status(401).json({
+                message: "Not authorized"
+            });
+
         const orders = await Order.find({
                 user: req.user.id
             })
@@ -193,42 +182,51 @@ exports.getMyOrders = async (req, res) => {
             .sort({
                 createdAt: -1
             });
+
         return res.json(orders);
     } catch (err) {
         console.error("GET MY ORDERS ERROR:", err);
         return res.status(500).json({
-            message: err.message || "Server error"
+            message: err.message
         });
     }
 };
 
-// ------------------ Admin: get all orders ------------------
+// --------------------------------- ADMIN ALL ORDERS ---------------------------------
 exports.getAllOrders = async (req, res) => {
     try {
-        if (!req.user || !req.user.isAdmin) return res.status(403).json({
-            message: "Admin only"
-        });
+        if (!req.user || !req.user.isAdmin)
+            return res.status(403).json({
+                message: "Admin only"
+            });
+
         const orders = await Order.find()
             .populate("user", "name email phone")
-            .populate("items.product", "name price image")
+            .populate({
+                path: "items.product",
+                select: "name price image",
+                model: "Product"
+            })
             .sort({
                 createdAt: -1
             });
+
         return res.json(orders);
     } catch (err) {
         console.error("GET ALL ORDERS ERROR:", err);
         return res.status(500).json({
-            message: err.message || "Server error"
+            message: err.message
         });
     }
 };
 
-// ------------------ Update Order Status (admin) ------------------
+// --------------------------------- UPDATE ORDER STATUS ---------------------------------
 exports.updateStatus = async (req, res) => {
     try {
-        if (!req.user || !req.user.isAdmin) return res.status(403).json({
-            message: "Admin only"
-        });
+        if (!req.user || !req.user.isAdmin)
+            return res.status(403).json({
+                message: "Admin only"
+            });
 
         const {
             status
@@ -241,9 +239,12 @@ exports.updateStatus = async (req, res) => {
         order.status = status;
         await order.save();
 
-        const phone = (order.user && order.user.phone) || (order.shippingAddress && order.shippingAddress.phone);
+        const phone =
+            (order.user && order.user.phone) ||
+            (order.shippingAddress && order.shippingAddress.phone);
+
         const client = getTwilioClient();
-        const text = `Hello ${(order.user && order.user.name) || (order.shippingAddress && order.shippingAddress.fullName) || "Customer"}, order ${order._id} status changed to ${status}.`;
+        const text = `Order ${order._id} status updated to ${status}.`;
 
         if (client && SMS_FROM && phone) {
             try {
@@ -252,38 +253,41 @@ exports.updateStatus = async (req, res) => {
                     to: phone,
                     body: text
                 });
+
                 try {
                     await client.messages.create({
                         from: WHATSAPP_FROM,
                         to: `whatsapp:${phone}`,
                         body: text
                     });
-                } catch (e) {
-                    console.warn("WhatsApp send failed:", e.message);
+                } catch (err) {
+                    console.warn("WhatsApp failed:", err.message);
                 }
-            } catch (e) {
-                console.warn("SMS send failed:", e.message);
+            } catch (err) {
+                console.warn("SMS failed:", err.message);
             }
         }
 
         return res.json({
-            message: "Order status updated",
+            message: "Status updated",
             order
         });
     } catch (err) {
-        console.error("UPDATE STATUS ERROR:", err);
+        console.error("STATUS UPDATE ERROR:", err);
         return res.status(500).json({
             message: "Server error"
         });
     }
 };
 
-// ------------------ Admin: send tracking message ------------------
+// --------------------------------- TRACKING MESSAGE ---------------------------------
 exports.sendTrackingMessage = async (req, res) => {
     try {
-        if (!req.user || !req.user.isAdmin) return res.status(403).json({
-            message: "Admin only"
-        });
+        if (!req.user || !req.user.isAdmin)
+            return res.status(403).json({
+                message: "Admin only"
+            });
+
         const {
             message
         } = req.body;
@@ -292,9 +296,12 @@ exports.sendTrackingMessage = async (req, res) => {
             message: "Order not found"
         });
 
-        const phone = order.user ? .phone || order.shippingAddress ? .phone;
+        const phone =
+            (order.user && order.user.phone) ||
+            (order.shippingAddress && order.shippingAddress.phone);
+
         if (!phone) return res.status(400).json({
-            message: "User phone missing"
+            message: "Phone missing"
         });
 
         const client = getTwilioClient();
@@ -307,13 +314,14 @@ exports.sendTrackingMessage = async (req, res) => {
                     to: phone,
                     body
                 });
+
                 await client.messages.create({
                     from: WHATSAPP_FROM,
                     to: `whatsapp:${phone}`,
                     body
                 });
             } catch (e) {
-                console.warn("Send tracking msg failed:", e.message);
+                console.warn("Send tracking failed:", e.message);
             }
         }
 
@@ -321,22 +329,22 @@ exports.sendTrackingMessage = async (req, res) => {
             message: "Tracking message sent"
         });
     } catch (err) {
-        console.error("TRACK ERROR:", err);
+        console.error("TRACKING ERROR:", err);
         return res.status(500).json({
             message: "Server error"
         });
     }
 };
 
-// ------------------ Invoice PDF generation ------------------
+// --------------------------------- GET INVOICE PDF ---------------------------------
 exports.getInvoice = async (req, res) => {
     try {
-        const order = await Order.findById(req.params.id).populate("user", "name email phone");
+        const order = await Order.findById(req.params.id).populate("user");
         if (!order) return res.status(404).json({
             message: "Order not found"
         });
 
-        if (!req.user || (!req.user.isAdmin && String(order.user) !== String(req.user.id))) {
+        if (!req.user || (!req.user.isAdmin && String(order.user._id) !== String(req.user.id))) {
             return res.status(403).json({
                 message: "Not authorized"
             });
@@ -350,22 +358,24 @@ exports.getInvoice = async (req, res) => {
         res.setHeader("Content-Disposition", `attachment; filename=invoice-${order._id}.pdf`);
         doc.pipe(res);
 
-        // header
         doc.fontSize(20).text("Invoice", {
             align: "center"
         });
         doc.moveDown();
+
         doc.fontSize(12).text(`Order ID: ${order._id}`);
+        doc.text(`Customer: ${order.shippingAddress.fullName}`);
+        doc.text(`Phone: ${order.shippingAddress.phone}`);
         doc.text(`Date: ${order.createdAt.toLocaleString()}`);
-        doc.text(`Customer: ${order.shippingAddress.fullName || (order.user && order.user.name)}`);
-        doc.text(`Phone: ${order.shippingAddress.phone || (order.user && order.user.phone) || "N/A"}`);
         doc.moveDown();
 
-        // items
         doc.fontSize(14).text("Items:");
-        order.items.forEach((it, idx) => {
-            doc.fontSize(12).text(`${idx + 1}. ${it.name} - ${it.qty} x ₹${it.price} = ₹${(it.qty * it.price)}`);
+        order.items.forEach((it, i) => {
+            doc.fontSize(12).text(
+                `${i + 1}. ${it.name} - ${it.qty} × ₹${it.price} = ₹${it.qty * it.price}`
+            );
         });
+
         doc.moveDown();
         doc.fontSize(14).text(`Total: ₹${order.totalAmount}`, {
             align: "right"

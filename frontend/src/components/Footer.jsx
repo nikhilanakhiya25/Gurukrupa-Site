@@ -10,7 +10,7 @@ export default function Footer() {
 
                 {/* ABOUT SECTION */}
                 <div className="footer-about">
-                    <h3>MERN E-Commerce</h3>
+                    <h3>GuruKrup Gift Article </h3>
                     <p>
                         Shop the latest trends in fashion, electronics, and more. Fast
                         delivery, easy returns, and 24/7 support.

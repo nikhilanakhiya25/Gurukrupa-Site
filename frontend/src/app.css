@@ -118,7 +118,9 @@
 
 /* Responsive Design */
 
-/* Tablet and below */
+/* Laptop (1025px and above) - Default styles are for laptop */
+
+/* Tablet/iPad (769px to 1024px) */
 @media (max-width: 1024px) {
     .navbar {
         padding: 10px 20px;
@@ -139,10 +141,11 @@
 
     .page-container {
         padding: 20px;
+        max-width: 1200px;
     }
 }
 
-/* Mobile */
+/* Mobile/Phone (up to 768px) */
 @media (max-width: 768px) {
     .navbar {
         flex-direction: column;
@@ -167,6 +170,8 @@
     .search-box {
         width: 100%;
         max-width: none;
+        padding: 8px 12px;
+        font-size: 14px;
     }
 
     .nav-right {
@@ -182,9 +187,56 @@
 
     .signup-btn {
         padding: 6px 12px;
+        font-size: 14px;
     }
 
     .page-container {
-        padding: 15px;
+        padding: 10px;
+        max-width: 100%;
+    }
+
+    .logo img {
+        height: 40px;
+    }
+
+    .cart-link {
+        font-size: 18px;
+    }
+}
+
+/* Small phones (up to 480px) */
+@media (max-width: 480px) {
+    .navbar {
+        padding: 8px 10px;
+    }
+
+    .nav-left {
+        gap: 10px;
+    }
+
+    .logo {
+        font-size: 20px;
+    }
+
+    .search-box {
+        padding: 6px 10px;
+        font-size: 13px;
+    }
+
+    .nav-right {
+        gap: 10px;
+    }
+
+    .auth-links a {
+        margin-left: 5px;
+        font-size: 13px;
+    }
+
+    .signup-btn {
+        padding: 5px 10px;
+    }
+
+    .page-container {
+        padding: 8px;
     }
 }

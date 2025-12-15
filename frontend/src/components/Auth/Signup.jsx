@@ -15,7 +15,7 @@ export default function Signup() {
     setLoading(true);
 
     try {
-      await API.post("/api/auth/signup", {
+      await API.post("/auth/signup", {
         name,
         email,
         password,

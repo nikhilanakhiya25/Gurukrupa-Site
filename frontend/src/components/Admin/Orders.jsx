@@ -1,4 +1,3 @@
-// frontend/src/components/Admin/Orders.js
 import React, { useState, useEffect } from "react";
 import API from "../../api/api";
 import "./Order.css";
@@ -16,10 +15,8 @@ export default function Orders() {
         try {
             setLoading(true);
 
-            // FIXED ENDPOINT
             const res = await API.get("/orders");
 
-            // Safely extract array
             const arr = Array.isArray(res.data)
                 ? res.data
                 : res.data.orders || res.data.data || [];
@@ -36,12 +33,12 @@ export default function Orders() {
     // ---------------- UPDATE ORDER STATUS ----------------
     const updateStatus = async (orderId, newStatus) => {
         try {
-            // FIXED ENDPOINT
             await API.put(`/orders/${orderId}/status`, { status: newStatus });
 
-            // Update UI instantly
             setOrders(prev =>
-                prev.map(o => o._id === orderId ? { ...o, status: newStatus } : o)
+                prev.map(o =>
+                    o._id === orderId ? { ...o, status: newStatus } : o
+                )
             );
 
             alert("Order status updated");
@@ -58,32 +55,68 @@ export default function Orders() {
             {loading && <p>Loading...</p>}
 
             <div className="orders-table">
+
+                {/* HEADER */}
                 <div className="orders-header">
-                    <strong>User</strong>
+                    <strong>User Details</strong>
                     <strong>Products</strong>
                     <strong>Total</strong>
                     <strong>Status</strong>
                 </div>
 
-                {orders.length === 0 && !loading && <p>No orders found</p>}
+                {orders.length === 0 && !loading && (
+                    <p>No orders found</p>
+                )}
 
+                {/* ORDERS */}
                 {orders.map(o => (
                     <div key={o._id} className="order-row">
 
-                        <div className="order-col">
-                            {o.user?.name ||
-                                o.shippingAddress?.name ||
-                                "Unknown"}
+                        {/* USER DETAILS */}
+                        <div className="order-col user-details">
+                            <p><b>Name:</b> {o.user?.name || o.shippingAddress?.name || "N/A"}</p>
+                            <p><b>Email:</b> {o.user?.email || "N/A"}</p>
+                            <p><b>Phone:</b> {o.user?.phone || o.shippingAddress?.phone || "N/A"}</p>
+                            <p>
+                                <b>Address:</b>{" "}
+                                {o.shippingAddress
+                                    ? `${o.shippingAddress.address}, ${o.shippingAddress.city} - ${o.shippingAddress.pincode}`
+                                    : "N/A"}
+                            </p>
                         </div>
 
-                        <div className="order-col">
-                            {o.items?.map(p =>
-                                `${p.product?.name || p.name} x ${p.qty}`
-                            ).join(", ")}
+                        {/* PRODUCTS WITH IMAGE + QTY */}
+                        <div className="order-col products-col">
+                            {o.items?.map((item, index, p) => (
+                                <div key={p._id} className="product-item">
+                                    <img
+                                        src={
+                                            p.image
+                                                ? `${BASE_URL}${p.image}`
+                                                : "https://via.placeholder.com/60"
+                                        }
+                                        alt={p.name}
+                                        onError={(e) =>
+                                            (e.target.src = "https://via.placeholder.com/60")
+                                        }
+                                        className="table-img"
+                                    />
+
+                                    <div className="product-info">
+                                        <p><b>{item.product?.name || item.name}</b></p>
+                                        <p>Qty: {item.qty}</p>
+                                        <p>Price: ₹ {item.price || item.product?.price || 0}</p>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
 
-                        <div className="order-col">₹ {o.totalAmount || o.totalPrice || 0}</div>
+                        {/* TOTAL */}
+                        <div className="order-col">
+                            ₹ {o.totalAmount || o.totalPrice || 0}
+                        </div>
 
+                        {/* STATUS */}
                         <div className="order-col">
                             <select
                                 value={o.status || "Pending"}

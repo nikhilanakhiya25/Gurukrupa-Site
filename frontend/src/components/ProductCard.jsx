@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import { CartContext } from "../contexts/CartContext";
+import { imageBaseURL } from "../api/api";
 
 export default function ProductCard({ product, showDescription = false }) {
     const { addToCart } = useContext(CartContext);
@@ -11,7 +12,7 @@ export default function ProductCard({ product, showDescription = false }) {
     return (
         <div className="product-card">
             <div className="img-box">
-                <img src={product.image} alt={product.name} />
+                <img src={`http://localhost:5000${product.image}`} alt={product.name} />
             </div>
 
             <h3>{product.name}</h3>

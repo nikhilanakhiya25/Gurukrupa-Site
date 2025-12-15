@@ -12,57 +12,88 @@ export default function Payment() {
     const [selectedMethod, setSelectedMethod] = useState("COD");
     const [confirmPopup, setConfirmPopup] = useState(false);
     const [shippingDetails, setShippingDetails] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     // 🔹 Load shipping details
     useEffect(() => {
-        const saved = JSON.parse(localStorage.getItem("shippingDetails"));
+        const saved = localStorage.getItem("shippingDetails");
         if (!saved) {
             navigate("/checkout");
             return;
         }
-        setShippingDetails(saved);
+        setShippingDetails(JSON.parse(saved));
     }, [navigate]);
 
-    // 🔹 Calculate total
+    // 🔹 Calculate total safely
     const totalPrice = cart.reduce(
-        (sum, item) => sum + item.price * item.qty,
+        (sum, item) => sum + Number(item.price) * item.qty,
         0
     );
 
-    // 🔹 PLACE ORDER (FIXED)
+    // 🔹 PLACE ORDER (FULLY FIXED)
     const placeOrder = async () => {
+        if (cart.length === 0) {
+            alert("Cart is empty");
+            return;
+        }
+
+        if (!shippingDetails) {
+            alert("Shipping details missing");
+            navigate("/checkout");
+            return;
+        }
+
+        const token = localStorage.getItem("token");
+        if (!token) {
+            alert("Please login to place order");
+            navigate("/login");
+            return;
+        }
+
         try {
-            // ✅ CREATE orderData (THIS WAS MISSING)
+            setLoading(true);
+
             const orderData = {
-                orderItems: cart.map((item) => ({
+                orderItems: cart.map(item => ({
                     product: item._id,
                     name: item.name,
-                    price: item.price,
+                    price: Number(item.price),
                     qty: item.qty,
-                    image: item.image,
+                    image: item.image || ""
                 })),
                 shippingAddress: shippingDetails,
                 paymentMethod: selectedMethod,
-                totalPrice,
+                totalPrice
             };
 
             console.log("📦 Sending Order:", orderData);
 
-            // ✅ baseURL already has /api → DO NOT add /api again
-            const res = await API.post("/", orderData);
+            const res = await API.post(
+                "/orders",
+                orderData,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
 
-            console.log("✅ ORDER SUCCESS:", res.data);
+            console.log("✅ ORDER CREATED:", res.data);
 
             clearCart();
             localStorage.removeItem("shippingDetails");
 
-            navigate("/order-success/" + res.data._id);
+            // 🔹 backend usually returns order directly
+            navigate(`/order-success/${res.data._id}`);
         } catch (error) {
             console.error("❌ ORDER ERROR:", error.response?.data || error.message);
             alert(
-                "Order failed: " +
-                (error.response?.data?.message || "Unknown error")
+                error.response?.data?.message ||
+                "Order failed. Please try again."
             );
+        } finally {
+            setLoading(false);
+            setConfirmPopup(false);
         }
     };
 
@@ -82,6 +113,7 @@ export default function Payment() {
                 <button
                     className="continue-btn"
                     onClick={() => setConfirmPopup(true)}
+                    disabled={cart.length === 0}
                 >
                     Continue
                 </button>
@@ -91,16 +123,23 @@ export default function Payment() {
                 <div className="popup-overlay">
                     <div className="popup-box">
                         <h3>Confirm Order?</h3>
-                        <p>Your order will be placed successfully.</p>
+                        <p>Total Amount: ₹{totalPrice}</p>
+
                         <div className="popup-actions">
                             <button
                                 className="cancel-btn"
                                 onClick={() => setConfirmPopup(false)}
+                                disabled={loading}
                             >
                                 Cancel
                             </button>
-                            <button className="place-btn" onClick={placeOrder}>
-                                Place Order
+
+                            <button
+                                className="place-btn"
+                                onClick={placeOrder}
+                                disabled={loading}
+                            >
+                                {loading ? "Placing..." : "Place Order"}
                             </button>
                         </div>
                     </div>

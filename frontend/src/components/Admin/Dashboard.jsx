@@ -8,6 +8,8 @@ import {
 } from "lucide-react";
 import "./AdminPanels.css";
 
+const BASE_URL = "http://localhost:5000"; // 🔴 change when deployed
+
 const Dashboard = () => {
     const [products, setProducts] = useState([]);
     const [users, setUsers] = useState([]);
@@ -20,17 +22,17 @@ const Dashboard = () => {
         fetchOrders();
     }, []);
 
-    // ✅ PRODUCTS → /api/products
+    // ✅ PRODUCTS
     const fetchProducts = async () => {
         try {
-            const res = await API.get("/products");
+            const res = await API.get("/admin/products");
             setProducts(res.data.products || res.data || []);
         } catch (err) {
             console.log("Products:", err.response?.data || err.message);
         }
     };
 
-    // ✅ USERS → /api/user
+    // ✅ USERS
     const fetchUsers = async () => {
         try {
             const res = await API.get("/user");
@@ -40,10 +42,10 @@ const Dashboard = () => {
         }
     };
 
-    // ✅ ORDERS → /api/orders
+    // ✅ ADMIN ORDERS (FIXED)
     const fetchOrders = async () => {
         try {
-            const res = await API.get("/orders");
+            const res = await API.get("/admin/orders"); // 🔥 FIX
             const data = res.data.orders || res.data || [];
             setOrders(data);
 
@@ -61,7 +63,7 @@ const Dashboard = () => {
         <div className="dashboard">
             <h2 className="page-title">Admin Dashboard</h2>
 
-            {/* ===== SUMMARY CARDS ===== */}
+            {/* ===== SUMMARY ===== */}
             <div className="stats-grid">
                 <div className="stat-card blue">
                     <Package />
@@ -111,11 +113,27 @@ const Dashboard = () => {
                     <tbody>
                         {products.map((p) => (
                             <tr key={p._id}>
-                                <td><img src={p.image} alt={p.name} /></td>
+                                <td>
+                                    <img
+                                        src={
+                                            p.image
+                                                ? `${BASE_URL}${p.image}`
+                                                : "https://via.placeholder.com/60"
+                                        }
+                                        alt={p.name}
+                                        onError={(e) =>
+                                            (e.target.src = "https://via.placeholder.com/60")
+                                        }
+                                        className="table-img"
+                                    />
+                                </td>
                                 <td>{p.name}</td>
                                 <td>₹ {p.price}</td>
                                 <td>
-                                    <span className={`badge ${p.countInStock > 0 ? "success" : "danger"}`}>
+                                    <span
+                                        className={`badge ${p.countInStock > 0 ? "success" : "danger"
+                                            }`}
+                                    >
                                         {p.countInStock > 0 ? "In Stock" : "Out"}
                                     </span>
                                 </td>
@@ -142,7 +160,10 @@ const Dashboard = () => {
                                 <td>{u.name}</td>
                                 <td>{u.email}</td>
                                 <td>
-                                    <span className={`badge ${u.isAdmin ? "admin" : "user"}`}>
+                                    <span
+                                        className={`badge ${u.isAdmin ? "admin" : "user"
+                                            }`}
+                                    >
                                         {u.isAdmin ? "Admin" : "User"}
                                     </span>
                                 </td>
@@ -169,7 +190,7 @@ const Dashboard = () => {
                             <tr key={o._id}>
                                 <td>{o._id.slice(-6)}</td>
                                 <td>{o.user?.name || "Guest"}</td>
-                                <td>₹ {o.totalAmount}</td>
+                                <td>₹ {o.totalPrice || o.totalAmount}</td>
                                 <td>
                                     <span className="badge warning">
                                         {o.status || "Pending"}

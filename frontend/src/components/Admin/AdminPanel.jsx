@@ -26,7 +26,7 @@ export default function AdminPanel() {
       <aside className="sidebar">
         <div className="sidebar-header">
           <User size={32} />
-          <h2>Admin Panel</h2>
+          <h2 className="text">Admin Panel</h2>
         </div>
 
         <nav className="menu">

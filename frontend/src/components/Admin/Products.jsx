@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import API from "../../api/api";
+import API, { imageBaseURL } from "../../api/api";
 import "./Product.css";
 
 export default function Products() {
@@ -195,7 +195,7 @@ export default function Products() {
                 {products.map((p) => (
                     <div className="product-card" key={p._id}>
                         <img
-                            src={p.image || "https://via.placeholder.com/150"}
+                            src={p.image ? `http://localhost:5000${p.image}` : "https://via.placeholder.com/150"}
                             alt={p.name}
                             className="product-img"
                         />

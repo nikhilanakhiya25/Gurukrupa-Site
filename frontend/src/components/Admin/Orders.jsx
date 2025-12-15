@@ -17,7 +17,7 @@ export default function Orders() {
             setLoading(true);
 
             // FIXED ENDPOINT
-            const res = await API.get("/admin/orders");
+            const res = await API.get("/orders");
 
             // Safely extract array
             const arr = Array.isArray(res.data)
@@ -37,7 +37,7 @@ export default function Orders() {
     const updateStatus = async (orderId, newStatus) => {
         try {
             // FIXED ENDPOINT
-            await API.put(`/admin/orders/${orderId}/status`, { status: newStatus });
+            await API.put(`/orders/${orderId}/status`, { status: newStatus });
 
             // Update UI instantly
             setOrders(prev =>

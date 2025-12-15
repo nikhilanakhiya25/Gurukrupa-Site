@@ -1,9 +1,12 @@
-# TODO: Make JWT Tokens Not Expire
+# TODO List for Fixing 401 Unauthorized Errors
 
-- [x] Edit backend/controller/authController.js to remove expiresIn from generateToken function
-- [ ] Verify that login and authentication still work without token expiration
+## Completed Tasks
+- [x] Updated `frontend/src/api/api.js` to use axios interceptor for setting Authorization header on each request from localStorage.
 
-# TODO: Fix 500 Internal Server Error in Admin Orders
+## Summary of Changes
+- Modified the API setup to dynamically set the Bearer token in the Authorization header for every request, ensuring authentication is included even if the token changes after initial load.
 
-- [x] Recreate backend/models/Order.js with proper Order schema
-- [x] Test the admin orders endpoint to ensure 500 error is resolved
+## Next Steps
+- Test the application by logging in as an admin user and accessing the Orders and Products admin pages.
+- If errors persist, check if the user is logged in and the token is valid (not expired).
+- Restart the frontend server if necessary to ensure changes are applied.

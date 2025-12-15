@@ -3,6 +3,8 @@ import { CartContext } from '../../contexts/CartContext';
 import { useNavigate } from 'react-router-dom';
 import './Cart.css';
 
+const BASE_URL = 'http://localhost:5000'; // 🔴 change in production
+
 export default function Cart() {
   const { cart, removeFromCart, updateQty } = useContext(CartContext);
   const navigate = useNavigate();
@@ -36,16 +38,23 @@ export default function Cart() {
         {cart.map(item => (
           <div key={item._id} className="cart-card">
 
-            {/* Product Image */}
+            {/* ✅ FIXED Product Image */}
             <img
-              src={item.image || 'https://via.placeholder.com/100'}
+              src={
+                item.image
+                  ? `${BASE_URL}${item.image}`
+                  : 'https://via.placeholder.com/100'
+              }
               alt={item.name}
+              onError={(e) =>
+                (e.target.src = 'https://via.placeholder.com/100')
+              }
+              className="cart-img"
             />
 
             <div className="cart-info">
               <h3>{item.name}</h3>
 
-              {/* ⭐ Ensure price formatted correctly */}
               <p>₹{Number(item.price).toFixed(2)}</p>
 
               {/* Quantity Controls */}
@@ -66,7 +75,6 @@ export default function Cart() {
                 </button>
               </div>
 
-              {/* ⭐ Fix subtotal */}
               <p>
                 Subtotal: ₹{(Number(item.price) * item.qty).toFixed(2)}
               </p>

@@ -3,6 +3,8 @@ import API from '../api/api';
 import { CartContext } from '../contexts/CartContext';
 import './productlist.css';
 
+const BASE_URL = 'http://localhost:5000'; // 🔴 change when deployed
+
 export default function ProductList() {
   const { addToCart } = useContext(CartContext);
 
@@ -14,6 +16,7 @@ export default function ProductList() {
   const [category, setCategory] = useState('All');
   const [price, setPrice] = useState(1000);
 
+  // Load products
   useEffect(() => {
     API.get('/products')
       .then(res => {
@@ -21,15 +24,16 @@ export default function ProductList() {
         setProducts(list);
         setFiltered(list);
       })
-      .catch(console.error);
+      .catch(err => console.error(err));
   }, []);
 
+  // Apply filters
   function applyFilters() {
     let list = [...products];
 
-    if (search.trim() !== '') {
+    if (search.trim()) {
       list = list.filter(p =>
-        p.name.toLowerCase().includes(search.toLowerCase())
+        p.name?.toLowerCase().includes(search.toLowerCase())
       );
     }
 
@@ -37,20 +41,22 @@ export default function ProductList() {
       list = list.filter(p => p.category === category);
     }
 
-    list = list.filter(p => p.price <= price);
+    list = list.filter(p => Number(p.price) <= price);
 
     setFiltered(list);
   }
 
-  useEffect(() => applyFilters(), [search, category, price, products]);
+  useEffect(() => {
+    applyFilters();
+  }, [search, category, price, products]);
 
-  // Extract unique categories
-  const categories = ['All', ...new Set(products.map(p => p.category))];
+  // Unique categories
+  const categories = ['All', ...new Set(products.map(p => p.category).filter(Boolean))];
 
   return (
     <div className="product-page">
 
-      {/* --- SIDEBAR FILTERS --- */}
+      {/* ===== SIDEBAR FILTERS ===== */}
       <div className="filters">
         <h3>Filters</h3>
 
@@ -67,11 +73,11 @@ export default function ProductList() {
         <div className="filter-box">
           <label>Category</label>
           <select value={category} onChange={e => setCategory(e.target.value)}>
-          {categories.map((cat, index) => (
-    <option key={cat || index} value={cat}>
-      {cat}
-    </option>
-  ))}
+            {categories.map((cat, index) => (
+              <option key={index} value={cat}>
+                {cat}
+              </option>
+            ))}
           </select>
         </div>
 
@@ -87,19 +93,28 @@ export default function ProductList() {
         </div>
       </div>
 
-      {/* --- PRODUCT GRID --- */}
+      {/* ===== PRODUCT GRID ===== */}
       <div className="products-grid">
+        {filtered.length === 0 && <p>No products found</p>}
+
         {filtered.map(p => (
           <div key={p._id} className="product-card">
             <div className="img-box">
               <img
-                src={p.image || 'https://via.placeholder.com/250'}
+                src={
+                  p.image
+                    ? `${BASE_URL}${p.image}`
+                    : 'https://via.placeholder.com/250'
+                }
                 alt={p.name}
+                onError={(e) => {
+                  e.target.src = 'https://via.placeholder.com/250';
+                }}
               />
             </div>
 
             <h3>{p.name}</h3>
-            <p className="price"> ₹{p.price}</p>
+            <p className="price">₹{p.price}</p>
 
             <button
               className="btn-add"

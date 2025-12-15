@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const twilio = require("twilio");
 const PDFDocument = require("pdfkit");
 
-// Twilio initialization (lazy)
+/* ======================= TWILIO ======================= */
 let twilioClient = null;
 const getTwilioClient = () => {
     if (!twilioClient) {
@@ -24,48 +24,77 @@ const getTwilioClient = () => {
 const SMS_FROM = process.env.TWILIO_SMS;
 const WHATSAPP_FROM = process.env.TWILIO_WHATSAPP || "whatsapp:+14155238886";
 
-// Normalize cart items
-function normalizeItems(items) {
-    return items.map((it) => ({
+// 🔧 ADD STRONG LOGGING HELPER
+async function sendNotifications(phone, message) {
+    const client = getTwilioClient();
+    if (!client) {
+        console.log("❌ Twilio client not ready");
+        return;
+    }
+
+    if (!phone || !phone.startsWith("+")) {
+        console.log("❌ Invalid phone format:", phone);
+        return;
+    }
+
+    console.log("📨 SMS_FROM:", SMS_FROM);
+    console.log("📨 WHATSAPP_FROM:", WHATSAPP_FROM);
+    console.log("📨 TO PHONE:", phone);
+    console.log("📨 TWILIO READY:", !!getTwilioClient());
+
+    try {
+        if (SMS_FROM) {
+            await client.messages.create({
+                from: SMS_FROM,
+                to: phone,
+                body: message
+            });
+            console.log("✅ SMS sent");
+        }
+
+        await client.messages.create({
+            from: WHATSAPP_FROM,
+            to: `whatsapp:${phone}`,
+            body: message
+        });
+        console.log("✅ WhatsApp sent");
+
+    } catch (err) {
+        console.error("❌ Twilio send error:", err.message);
+    }
+}
+
+/* ======================= HELPERS ======================= */
+const normalizeItems = (items) =>
+    items.map((it) => ({
         product: it.product || it.productId || it._id,
         name: it.name || it.title || "",
-        image: it.image || it.img || "",
+        image: it.image || "",
         qty: Number(it.qty || it.quantity || 1),
         price: Number(it.price || it.unitPrice || 0)
     }));
-}
 
-// Normalize shipping address
-function normalizeShipping(s) {
+const normalizeShipping = (s) => {
     if (!s) return null;
-    if (typeof s === "string") {
-        return {
-            fullName: "Customer",
-            phone: null,
-            address: s,
-            city: "",
-            pincode: ""
-        };
-    }
-
     return {
         fullName: s.fullName || s.name || "Customer",
-        phone: s.phone || s.mobile || s.contact,
+        phone: s.phone || s.mobile || null,
         address: s.address || "",
         city: s.city || "",
-        pincode: s.pincode || s.postalCode
+        pincode: s.pincode || s.postalCode || ""
     };
-}
+};
 
-// --------------------------------- CREATE ORDER ---------------------------------
+/* ======================= CREATE ORDER ======================= */
 exports.createOrder = async (req, res) => {
     try {
-        if (!req.user || !req.user.id)
+        if (!req.user || !req.user.id) {
             return res.status(401).json({
                 message: "Not authorized"
             });
+        }
 
-        let {
+        const {
             items,
             orderItems,
             shippingAddress,
@@ -74,106 +103,80 @@ exports.createOrder = async (req, res) => {
             paymentMethod
         } = req.body;
 
-        const incoming = Array.isArray(items) ?
-            items :
-            Array.isArray(orderItems) ?
+        const incoming = Array.isArray(orderItems) ?
             orderItems :
+            Array.isArray(items) ?
+            items :
             [];
 
-        if (!incoming.length)
+        if (!incoming.length) {
             return res.status(400).json({
                 message: "Cart is empty"
             });
+        }
 
         const normalizedItems = normalizeItems(incoming);
 
-        // Validate product IDs
         for (const it of normalizedItems) {
-            if (!it.product)
-                return res.status(400).json({
-                    message: "Product ID missing"
-                });
-
-            if (!mongoose.Types.ObjectId.isValid(String(it.product)))
+            if (!it.product || !mongoose.Types.ObjectId.isValid(it.product)) {
                 return res.status(400).json({
                     message: "Invalid product ID"
                 });
+            }
         }
 
-        const finalShipping = normalizeShipping(shippingAddress);
-        if (!finalShipping) return res.status(400).json({
-            message: "Shipping missing"
-        });
-
-        if (!finalShipping.phone)
+        const shipping = normalizeShipping(shippingAddress);
+        if (!shipping) {
             return res.status(400).json({
-                message: "Phone number required"
+                message: "Shipping missing"
             });
+        }
 
         const finalTotal = totalAmount || totalPrice;
-        if (finalTotal == null)
+        if (finalTotal == null) {
             return res.status(400).json({
-                message: "Total amount missing"
+                message: "Total missing"
             });
+        }
 
-        const order = new Order({
+        const order = await Order.create({
             user: req.user.id,
             items: normalizedItems,
-            shippingAddress: finalShipping,
+            shippingAddress: shipping,
             totalAmount: Number(finalTotal),
             paymentMethod: paymentMethod || "COD",
             status: "Pending"
         });
 
-        const savedOrder = await order.save();
-
-        // Send SMS/WhatsApp
-        const client = getTwilioClient();
-        const phone = finalShipping.phone;
-        const msg = `Hello ${finalShipping.fullName}, your order (${savedOrder._id}) has been placed. Total: ₹${savedOrder.totalAmount}. Thank you!`;
-
-        if (client && SMS_FROM && phone) {
-            try {
-                await client.messages.create({
-                    from: SMS_FROM,
-                    to: phone,
-                    body: msg
-                });
-
-                // WhatsApp fallback
-                try {
-                    await client.messages.create({
-                        from: WHATSAPP_FROM,
-                        to: `whatsapp:${phone}`,
-                        body: msg
-                    });
-                } catch (e) {
-                    console.warn("WhatsApp failed:", e.message);
-                }
-            } catch (e) {
-                console.warn("SMS failed:", e.message);
-            }
-        }
+        /* -------- Notifications (NON BLOCKING) -------- */
+        await sendNotifications(
+            shipping.phone,
+            `✅ Order Confirmed
+Order ID: ${order._id}
+Total: ₹${order.totalAmount}`
+        );
 
         return res.status(201).json({
             success: true,
-            order: savedOrder
+            _id: order._id, // ⭐ frontend friendly
+            order
         });
     } catch (err) {
         console.error("ORDER CREATE ERROR:", err);
         return res.status(500).json({
-            message: err.message
+            message: "Order creation failed"
         });
     }
 };
 
-// --------------------------------- USER ORDERS ---------------------------------
+/* ======================= USER ORDERS ======================= */
 exports.getMyOrders = async (req, res) => {
     try {
-        if (!req.user || !req.user.id)
+        if (!req.user || !req.user.id) {
             return res.status(401).json({
                 message: "Not authorized"
             });
+        }
 
         const orders = await Order.find({
                 user: req.user.id
@@ -183,160 +186,70 @@ exports.getMyOrders = async (req, res) => {
                 createdAt: -1
             });
 
-        return res.json(orders);
+        res.json(orders);
     } catch (err) {
         console.error("GET MY ORDERS ERROR:", err);
-        return res.status(500).json({
-            message: err.message
+        res.status(500).json({
+            message: "Server error"
         });
     }
 };
 
-// --------------------------------- ADMIN ALL ORDERS ---------------------------------
+/* ======================= ADMIN ORDERS ======================= */
 exports.getAllOrders = async (req, res) => {
     try {
-        if (!req.user || !req.user.isAdmin)
+        if (!req.user || !req.user.isAdmin) {
             return res.status(403).json({
                 message: "Admin only"
             });
+        }
 
         const orders = await Order.find()
             .populate("user", "name email phone")
-            .populate({
-                path: "items.product",
-                select: "name price image",
-                model: "Product"
-            })
+            .populate("items.product", "name price image")
             .sort({
                 createdAt: -1
             });
 
-        return res.json(orders);
+        res.json(orders);
     } catch (err) {
         console.error("GET ALL ORDERS ERROR:", err);
-        return res.status(500).json({
-            message: err.message
+        res.status(500).json({
+            message: "Server error"
         });
     }
 };
 
-// --------------------------------- UPDATE ORDER STATUS ---------------------------------
+/* ======================= UPDATE STATUS ======================= */
 exports.updateStatus = async (req, res) => {
     try {
-        if (!req.user || !req.user.isAdmin)
+        if (!req.user || !req.user.isAdmin) {
             return res.status(403).json({
                 message: "Admin only"
             });
+        }
 
-        const {
-            status
-        } = req.body;
         const order = await Order.findById(req.params.id).populate("user");
         if (!order) return res.status(404).json({
             message: "Order not found"
         });
 
-        order.status = status;
+        order.status = req.body.status;
         await order.save();
 
-        const phone =
-            (order.user && order.user.phone) ||
-            (order.shippingAddress && order.shippingAddress.phone);
-
-        const client = getTwilioClient();
-        const text = `Order ${order._id} status updated to ${status}.`;
-
-        if (client && SMS_FROM && phone) {
-            try {
-                await client.messages.create({
-                    from: SMS_FROM,
-                    to: phone,
-                    body: text
-                });
-
-                try {
-                    await client.messages.create({
-                        from: WHATSAPP_FROM,
-                        to: `whatsapp:${phone}`,
-                        body: text
-                    });
-                } catch (err) {
-                    console.warn("WhatsApp failed:", err.message);
-                }
-            } catch (err) {
-                console.warn("SMS failed:", err.message);
-            }
-        }
-
-        return res.json({
+        res.json({
             message: "Status updated",
             order
         });
     } catch (err) {
-        console.error("STATUS UPDATE ERROR:", err);
-        return res.status(500).json({
+        console.error("STATUS ERROR:", err);
+        res.status(500).json({
             message: "Server error"
         });
     }
 };
 
-// --------------------------------- TRACKING MESSAGE ---------------------------------
-exports.sendTrackingMessage = async (req, res) => {
-    try {
-        if (!req.user || !req.user.isAdmin)
-            return res.status(403).json({
-                message: "Admin only"
-            });
-
-        const {
-            message
-        } = req.body;
-        const order = await Order.findById(req.params.id).populate("user");
-        if (!order) return res.status(404).json({
-            message: "Order not found"
-        });
-
-        const phone =
-            (order.user && order.user.phone) ||
-            (order.shippingAddress && order.shippingAddress.phone);
-
-        if (!phone) return res.status(400).json({
-            message: "Phone missing"
-        });
-
-        const client = getTwilioClient();
-        const body = `Update for order ${order._id}: ${message}`;
-
-        if (client && SMS_FROM) {
-            try {
-                await client.messages.create({
-                    from: SMS_FROM,
-                    to: phone,
-                    body
-                });
-
-                await client.messages.create({
-                    from: WHATSAPP_FROM,
-                    to: `whatsapp:${phone}`,
-                    body
-                });
-            } catch (e) {
-                console.warn("Send tracking failed:", e.message);
-            }
-        }
-
-        return res.json({
-            message: "Tracking message sent"
-        });
-    } catch (err) {
-        console.error("TRACKING ERROR:", err);
-        return res.status(500).json({
-            message: "Server error"
-        });
-    }
-};
-
-// --------------------------------- GET INVOICE PDF ---------------------------------
+/* ======================= INVOICE PDF ======================= */
 exports.getInvoice = async (req, res) => {
     try {
         const order = await Order.findById(req.params.id).populate("user");
@@ -344,7 +257,7 @@ exports.getInvoice = async (req, res) => {
             message: "Order not found"
         });
 
-        if (!req.user || (!req.user.isAdmin && String(order.user._id) !== String(req.user.id))) {
+        if ((!req.user || !req.user.isAdmin) && String(order.user._id) !== String(req.user.id)) {
             return res.status(403).json({
                 message: "Not authorized"
             });
@@ -355,36 +268,82 @@ exports.getInvoice = async (req, res) => {
             margin: 50
         });
         res.setHeader("Content-Type", "application/pdf");
-        res.setHeader("Content-Disposition", `attachment; filename=invoice-${order._id}.pdf`);
+        res.setHeader(
+            "Content-Disposition",
+            `attachment; filename=invoice-${order._id}.pdf`
+        );
         doc.pipe(res);
 
         doc.fontSize(20).text("Invoice", {
             align: "center"
-        });
-        doc.moveDown();
+        }).moveDown();
+        doc.fontSize(12)
+            .text(`Order ID: ${order._id}`)
+            .text(`Name: ${order.shippingAddress.fullName}`)
+            .text(`Phone: ${order.shippingAddress.phone || "-"}`)
+            .text(`Date: ${order.createdAt.toLocaleString()}`)
+            .moveDown();
 
-        doc.fontSize(12).text(`Order ID: ${order._id}`);
-        doc.text(`Customer: ${order.shippingAddress.fullName}`);
-        doc.text(`Phone: ${order.shippingAddress.phone}`);
-        doc.text(`Date: ${order.createdAt.toLocaleString()}`);
-        doc.moveDown();
-
-        doc.fontSize(14).text("Items:");
         order.items.forEach((it, i) => {
-            doc.fontSize(12).text(
-                `${i + 1}. ${it.name} - ${it.qty} × ₹${it.price} = ₹${it.qty * it.price}`
+            doc.text(
+                `${i + 1}. ${it.name} - ${it.qty} × ₹${it.price} = ₹${
+                    it.qty * it.price
+                }`
             );
         });
 
-        doc.moveDown();
-        doc.fontSize(14).text(`Total: ₹${order.totalAmount}`, {
-            align: "right"
-        });
+        doc.moveDown().fontSize(14).text(
+            `Total: ₹${order.totalAmount}`, {
+                align: "right"
+            }
+        );
 
         doc.end();
     } catch (err) {
         console.error("INVOICE ERROR:", err);
-        return res.status(500).json({
+        res.status(500).json({
+            message: "Server error"
+        });
+    }
+};
+
+/* ======================= SEND TRACKING MESSAGE ======================= */
+exports.sendTrackingMessage = async (req, res) => {
+    try {
+        if (!req.user || !req.user.isAdmin) {
+            return res.status(403).json({
+                message: "Admin only"
+            });
+        }
+
+        const order = await Order.findById(req.params.id).populate("user");
+        if (!order) return res.status(404).json({
+            message: "Order not found"
+        });
+
+        const { trackingNumber, carrier } = req.body;
+        if (!trackingNumber || !carrier) {
+            return res.status(400).json({
+                message: "Tracking number and carrier required"
+            });
+        }
+
+        /* -------- Notifications (NON BLOCKING) -------- */
+        await sendNotifications(
+            order.shippingAddress.phone,
+            `📦 Tracking Update
+Order ID: ${order._id}
+Tracking Number: ${trackingNumber}
+Carrier: ${carrier}
+Track your order at: https://www.${carrier.toLowerCase()}.com/track/${trackingNumber}`
+        );
+
+        res.json({
+            message: "Tracking message sent"
+        });
+    } catch (err) {
+        console.error("TRACKING MESSAGE ERROR:", err);
+        res.status(500).json({
             message: "Server error"
         });
     }

@@ -124,3 +124,57 @@
 .btn-delete:hover {
     background-color: #c82333;
 }
+
+/* ================= RESPONSIVE DESIGN ================= */
+/* Tablet */
+@media (max-width: 768px) {
+    .products-container {
+        padding: 15px;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .products-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 15px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    .products-container {
+        padding: 10px;
+    }
+
+    .page-title {
+        font-size: 1.5rem;
+    }
+
+    .product-form {
+        padding: 15px;
+    }
+
+    .products-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .product-card {
+        max-width: 100%;
+    }
+
+    .product-actions {
+        flex-direction: column;
+        gap: 5px;
+        padding: 15px 0;
+    }
+
+    .btn-edit,
+    .btn-delete {
+        width: 100%;
+        padding: 10px;
+    }
+}

@@ -1,12 +1,41 @@
-# TODO List for Fixing 401 Unauthorized Errors
+# TODO: Deploy MERN Ecommerce Project
 
-## Completed Tasks
-- [x] Updated `frontend/src/api/api.js` to use axios interceptor for setting Authorization header on each request from localStorage.
+## 1. Push Code to GitHub
+- [x] Initialize Git repository
+- [x] Add all files to Git
+- [x] Commit changes with message "Initial MERN ecommerce"
+- [x] Push to GitHub repository
 
-## Summary of Changes
-- Modified the API setup to dynamically set the Bearer token in the Authorization header for every request, ensuring authentication is included even if the token changes after initial load.
+## 2. Setup MongoDB Atlas (Database Online)
+- [ ] Create MongoDB Atlas account at https://www.mongodb.com/cloud/atlas
+- [ ] Create FREE cluster (M0, Region: Mumbai recommended)
+- [ ] Create Database User (Username, Password)
+- [ ] Configure Network Access (Add IP: 0.0.0.0/0)
+- [ ] Copy Connection String (e.g., mongodb+srv://username:password@cluster0.mongodb.net/ecommerce)
 
-## Next Steps
-- Test the application by logging in as an admin user and accessing the Orders and Products admin pages.
-- If errors persist, check if the user is logged in and the token is valid (not expired).
-- Restart the frontend server if necessary to ensure changes are applied.
+## 3. Deploy Backend (Node + Express) on Render
+- [ ] Create Render account at https://render.com
+- [ ] Create New Web Service
+- [ ] Connect GitHub repository
+- [ ] Set Root Directory: backend
+- [ ] Set Build Command: npm install
+- [ ] Set Start Command: node server.js
+- [ ] Add Environment Variables:
+  - MONGO_URI = [MongoDB Connection String]
+  - JWT_SECRET = [Your Secret Key]
+  - PORT = 5000
+- [ ] Deploy and get backend URL (e.g., https://your-backend.onrender.com)
+
+## 4. Deploy Frontend (React) on Vercel / Netlify
+- [ ] Choose Vercel (https://vercel.com) or Netlify (https://netlify.com)
+- [ ] Create account and connect GitHub repository
+- [ ] Set build settings:
+  - Build Command: npm run build
+  - Publish Directory: build
+- [ ] Add environment variables if needed (e.g., REACT_APP_API_URL = [Backend URL])
+- [ ] Deploy and get frontend URL
+
+## 5. Finalize and Test
+- [ ] Update frontend API calls to use deployed backend URL
+- [ ] Test the full application
+- [ ] Make any necessary adjustments

@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Routes, Route, Link, Navigate } from "react-router-dom";
 
 import HomePage from "./components/HomePage";
@@ -31,6 +31,7 @@ import logo from "./Images/Logo.jpg";
 export default function App() {
   const { user, logout } = useAuth();
   const isLoggedIn = !!user;
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const { cart } = useContext(CartContext);
   const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 0), 0);
@@ -50,15 +51,22 @@ export default function App() {
               <img src={logo} alt="Logo" className="h-10" />
             </Link>
 
-            <div className="nav-links">
-              <Link to="/">Home</Link>
-              <Link to="/products">Products</Link>
+            <div className={`nav-links ${isMenuOpen ? 'open' : ''}`}>
+              <Link to="/" onClick={() => setIsMenuOpen(false)}>Home</Link>
+              <Link to="/products" onClick={() => setIsMenuOpen(false)}>Products</Link>
 
               {/* Admin Only */}
               {user?.role?.toLowerCase() === "admin" && (
-                <Link to="/admin">Admin</Link>
+                <Link to="/admin" onClick={() => setIsMenuOpen(false)}>Admin</Link>
               )}
             </div>
+          </div>
+
+          {/* Burger Menu Icon */}
+          <div className="burger-menu" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+            <span className={`bar ${isMenuOpen ? 'open' : ''}`}></span>
+            <span className={`bar ${isMenuOpen ? 'open' : ''}`}></span>
+            <span className={`bar ${isMenuOpen ? 'open' : ''}`}></span>
           </div>
 
           <div className="nav-center">

@@ -3,7 +3,7 @@ import { CartContext } from '../../contexts/CartContext';
 import { useNavigate } from 'react-router-dom';
 import './Cart.css';
 
-const BASE_URL = 'http://localhost:5000'; // 🔴 change in production
+import { imageBaseURL } from '../../api/api';
 
 export default function Cart() {
   const { cart, removeFromCart, updateQty } = useContext(CartContext);

@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import "./AdminPanels.css";
 
-const BASE_URL = "http://localhost:5000"; // 🔴 change when deployed
+import { imageBaseURL } from "../../api/api";
 
 const Dashboard = () => {
     const [products, setProducts] = useState([]);
@@ -117,7 +117,7 @@ const Dashboard = () => {
                                     <img
                                         src={
                                             p.image
-                                                ? `${BASE_URL}${p.image}`
+                                                ? `${imageBaseURL}${p.image}`
                                                 : "https://via.placeholder.com/60"
                                         }
                                         alt={p.name}

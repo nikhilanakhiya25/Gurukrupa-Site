@@ -26,7 +26,7 @@ export default function HomePage() {
   useEffect(() => {
     const loadProducts = async () => {
       try {
-        const res = await API.get("/products");
+        const res = await API.get("/api/products");
         const data = res.data.products || res.data;
         setProducts(data.slice(0, 5)); // show top 8 products
       } catch (err) {

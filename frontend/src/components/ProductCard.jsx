@@ -12,7 +12,7 @@ export default function ProductCard({ product, showDescription = false }) {
     return (
         <div className="product-card">
             <div className="img-box">
-                <img src={`http://localhost:5000${product.image}`} alt={product.name} />
+                <img src={`${imageBaseURL}${product.image}`} alt={product.name} />
             </div>
 
             <h3>{product.name}</h3>

@@ -3,8 +3,6 @@ import API from '../api/api';
 import { CartContext } from '../contexts/CartContext';
 import './productlist.css';
 
-const BASE_URL = 'http://localhost:5000'; // 🔴 change when deployed
-
 export default function ProductList() {
   const { addToCart } = useContext(CartContext);
 
@@ -18,7 +16,7 @@ export default function ProductList() {
 
   // Load products
   useEffect(() => {
-    API.get('/products')
+    API.get('/api/products')
       .then(res => {
         const list = res.data.products || res.data;
         setProducts(list);
@@ -103,7 +101,7 @@ export default function ProductList() {
               <img
                 src={
                   p.image
-                    ? `${BASE_URL}${p.image}`
+                    ? `${imageBaseURL}${p.image}`
                     : 'https://via.placeholder.com/250'
                 }
                 alt={p.name}

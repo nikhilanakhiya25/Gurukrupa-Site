@@ -13,7 +13,7 @@ app.use(express.urlencoded({ limit: '10mb', extended: true }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/mern-ecommerce', {
+mongoose.connect(process.env.MONGO_URI || 'mongodb+srv://nikhilanakhiya1_db_user:Nikhil9763@cluster0.lamrfps.mongodb.net/?appName=Cluster0', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 }).then(() => console.log('MongoDB connected')).catch(err => console.log('MongoDB connection error:', err));

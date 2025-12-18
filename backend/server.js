@@ -13,7 +13,7 @@ app.use(express.urlencoded({ limit: '10mb', extended: true }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGO_URI || 'mongodb+srv://nikhilanakhiya1_db_user:Nikhil9763@cluster0.lamrfps.mongodb.net/?appName=Cluster0', {
+mongoose.connect(process.env.MONGO_URI || 'mongodb+srv://admin:admin123@mernecom.ljj2ebf.mongodb.net/?appName=mernecom', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 }).then(() => console.log('MongoDB connected')).catch(err => console.log('MongoDB connection error:', err));

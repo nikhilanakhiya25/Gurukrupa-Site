@@ -13,3 +13,11 @@ Frontend: frontend/
 Notes:
   - Backend serves uploads from /backend/uploads (images).
   - API base: http://localhost:5000/api
+
+
+
+
+
+
+
+  F1uV2sPD58AR57K4

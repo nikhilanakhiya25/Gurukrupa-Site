@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API = axios.create({ baseURL: import.meta.env.VITE_API_URL });
+const API = axios.create({ baseURL: process.env.REACT_APP_API_URL });
 
 // Add request interceptor to set Authorization header on each request
 
@@ -28,6 +28,6 @@ API.interceptors.request.use(
 
 );
 
-export const imageBaseURL = import.meta.env.VITE_API_URL;
+export const imageBaseURL = process.env.REACT_APP_API_URL;
 
 export default API;

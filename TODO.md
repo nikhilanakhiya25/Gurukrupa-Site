@@ -1,4 +1,14 @@
-# TODO: Fix 500 Internal Server Error on Deployed Site
+# TODO: Fix Vercel Deployment Issue
+
+## Steps to Complete
+- [x] Delete vercel.json (root)
+- [x] Delete backend/vercel.json
+- [x] Delete frontend/vercel.json
+- [x] Commit changes with message "remove vercel config"
+- [x] Push changes to GitHub
+- [ ] In Vercel dashboard: Set Framework: Vite, Root Directory: frontend, Deploy
+
+## Previous Task: Fix 500 Internal Server Error on Deployed Site
 
 ## Completed Steps
 - [x] Analyze backend code and identify issues

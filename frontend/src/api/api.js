@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://wooden-gurukrupa-api.onrender.com"
+  baseURL: "https://gurukrupa-site-ten.vercel.app/"
 });
 
 // Add request interceptor to set Authorization header on each request

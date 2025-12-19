@@ -35,7 +35,7 @@ let isConnected = false;
 async function connectDB() {
   if (isConnected) return;
 
-  await mongoose.connect(process.env.MONGO_URI || 'mongodb+srv://nikhilanakhiya1_db_user:Nikhil9763@gift-articles.r2r8gmv.mongodb.net/?appName=gift-articles', {
+  await mongoose.connect(process.env.MONGO_URI || 'mongodb+srv://nikhilanakhiya1_db_user:GjiKLsVeRsXb5afD@mern-ecom.l8xvija.mongodb.net/?appName=mern-ecom', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   });

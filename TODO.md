@@ -1,3 +1,4 @@
-- [x] Update backend/server.js: Add test route "/", move routes before MongoDB connect, move listen inside connect.then block
+- [x] Update backend/server.js: Replace with safe working version as per diagnosis
+- [x] Update backend/package.json: Change start script to "node server.js" for Render
 - [x] Update backend/routes/productRoutes.js: Replace get "/" route with simple version from diagnosis
 - [x] Update frontend/src/api/api.js: Change baseURL to "https://wooden-gurukrupa-api.onrender.com/api"

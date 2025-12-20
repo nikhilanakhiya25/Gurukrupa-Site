@@ -17,7 +17,7 @@ app.use("/api/orders", require("./routes/orderRoutes"));
 app.use("/api/users", require("./routes/user"));
 
 mongoose
-  .connect(process.env.MONGO_URI)
+  .connect(process.env.MONGO_URI || 'mongodb+srv://admin:admin123@mernecom.ljj2ebf.mongodb.net/?appName=mernecom', )
   .then(() => {
     console.log("MongoDB Connected ✅");
     app.listen(process.env.PORT || 5000, () =>

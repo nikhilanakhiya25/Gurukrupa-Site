@@ -1,6 +1,0 @@
-{
-  "framework": "vite",
-  "rootDirectory": "frontend",
-  "buildCommand": "chmod +x node_modules/.bin/vite && npm run build",
-  "outputDirectory": "dist"
-}

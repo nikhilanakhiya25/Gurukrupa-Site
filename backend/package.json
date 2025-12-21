@@ -4,6 +4,7 @@
   "main": "api/index.js",
   "scripts": {
     "start": "node server.js",
+    "dev": "node server.js",
     "seed": "node seed.js"
   },
   "dependencies": {

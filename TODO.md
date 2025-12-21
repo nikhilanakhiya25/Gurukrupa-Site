@@ -1,12 +1,8 @@
-# TODO: Fix Axios Base URL Issue
+# Backend Fix TODO
 
-## Completed Tasks
-- [x] Analyze API calls in frontend components
-- [x] Identify incorrect API calls in ProductList.jsx and HomePage.jsx
-- [x] Fix ProductList.jsx: Change API.get('/api/products') to API.get('/products')
-- [x] Fix HomePage.jsx: Change API.get('/api/products') to API.get('/products')
-- [x] Test the backend API endpoint: https://gurukrupa-site-rouge.vercel.app/api/products
-
-## Next Steps
-- [ ] Redeploy frontend on Vercel
-- [ ] Hard refresh browser (Ctrl + Shift + R) to test the fix
+- [x] Update backend/models/Product.js to match the exact schema (remove extra fields like colors, countInStock)
+- [x] Update backend/routes/productRoutes.js to match the exact code (fix Product.find() to Product.find(), error message to "PRODUCT API ERROR:")
+- [x] Update backend/server.js to match the exact code (remove extra routes, fix test route)
+- [x] Create backend/.env file with MONGO_URI
+- [x] Test backend locally: cd backend, npm install, node server.js, check http://localhost:5000/api/products returns []
+- [ ] Clean up backend structure to match: remove extra directories like config/, controller/, lib/, middleware/, uploads/, utils/, api/, seed.js, vercel.json if not needed

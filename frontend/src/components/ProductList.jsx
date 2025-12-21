@@ -16,7 +16,7 @@ export default function ProductList() {
 
   // Load products
   useEffect(() => {
-    API.get('/api/products')
+    API.get('/products')
       .then(res => {
         const list = res.data.products || res.data;
         setProducts(list);

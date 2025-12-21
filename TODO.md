@@ -1,7 +1,12 @@
-# Deployment Fix Tasks
+# TODO: Fix Axios Base URL Issue
 
-- [x] Edit frontend/vite.config.js to set base: "/"
-- [x] Create frontend/vercel.json with SPA routing rewrites
-- [x] Update root vercel.json to add "rootDirectory": "frontend"
-- [ ] Rebuild the frontend (npm run build in frontend folder)
-- [ ] Redeploy to Vercel
+## Completed Tasks
+- [x] Analyze API calls in frontend components
+- [x] Identify incorrect API calls in ProductList.jsx and HomePage.jsx
+- [x] Fix ProductList.jsx: Change API.get('/api/products') to API.get('/products')
+- [x] Fix HomePage.jsx: Change API.get('/api/products') to API.get('/products')
+- [x] Test the backend API endpoint: https://gurukrupa-site-rouge.vercel.app/api/products
+
+## Next Steps
+- [ ] Redeploy frontend on Vercel
+- [ ] Hard refresh browser (Ctrl + Shift + R) to test the fix

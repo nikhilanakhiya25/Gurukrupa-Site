@@ -20,6 +20,7 @@ app.use('/api/admin', require('../routes/admin'));
 app.use('/api/user', require('../routes/user'));
 app.use('/api/notifications', require('../routes/notificationRoutes'));
 
+
 // Root route
 app.get("/", (req, res) => {
   res.send("Backend is running on Vercel 🚀");

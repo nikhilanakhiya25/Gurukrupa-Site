@@ -1,7 +1,7 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
-const orderController = require("../controller/orderController");
-const auth = require("../middleware/auth");
+import orderController from "../controller/orderController.js";
+import auth from "../middleware/auth.js";
 
 const { protect, admin } = auth;
 
@@ -23,4 +23,4 @@ router.post("/:id/track", protect, admin, orderController.sendTrackingMessage);
 // Invoice download (GET /api/orders/:id/invoice)
 router.get("/:id/invoice", protect, orderController.getInvoice);
 
-module.exports = router;
+export default router;

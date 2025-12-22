@@ -16,7 +16,7 @@ const generateToken = (user) => {
 };
 
 // ================= SIGNUP =================
-router.post("/signup", async (req, res) => {
+router.post("/register", async (req, res) => {
     try {
         const {
             name,

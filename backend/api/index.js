@@ -26,7 +26,7 @@ import adminRoutes from '../routes/admin.js';
 import userRoutes from '../routes/user.js';
 import notificationRoutes from '../routes/notificationRoutes.js';
 
-app.use('/api/auth', authRoutes);
+app.use('/api/users', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/admin', adminRoutes);

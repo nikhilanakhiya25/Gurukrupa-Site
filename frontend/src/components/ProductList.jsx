@@ -3,6 +3,8 @@ import API from '../api/api';
 import { CartContext } from '../contexts/CartContext';
 import './productlist.css';
 
+const imageBaseURL = import.meta.env.VITE_IMAGE_BASE_URL;
+
 export default function ProductList() {
   const { addToCart } = useContext(CartContext);
 

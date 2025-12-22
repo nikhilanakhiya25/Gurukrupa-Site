@@ -5,8 +5,14 @@ require("dotenv").config();
 
 const app = express();
 
+/* ✅ CORRECT CORS CONFIG */
 app.use(cors({
-  origin: "*",
+  origin: [
+    "https://gurukrupa-site-giftarticle.vercel.app",
+    "http://localhost:3000"
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
 }));
 app.use(express.json());
 

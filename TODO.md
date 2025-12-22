@@ -1,3 +1,3 @@
 - [x] Mount authRoutes in backend/server.js as app.use("/api/users", authRoutes);
 - [x] Update CORS in backend/server.js to allow the Vercel frontend origin.
-- [ ] Deploy the updated backend to Render (or Vercel).
+- [x] Deploy the updated backend to Render (or Vercel). (Attempted, but authentication failed. .env file created with JWT and other credentials.)

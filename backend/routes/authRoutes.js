@@ -1,7 +1,7 @@
-import express from "express";
-import User from "../models/User.js";
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+const express = require("express");
+const User = require("../models/User.js");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 const router = express.Router();
 
@@ -117,4 +117,4 @@ router.post("/login", async (req, res) => {
     }
 });
 
-export default router;
+module.exports = router;

@@ -23,4 +23,4 @@ router.post("/:id/track", protect, admin, orderController.sendTrackingMessage);
 // Invoice download (GET /api/orders/:id/invoice)
 router.get("/:id/invoice", protect, orderController.getInvoice);
 
-export default router;
+module.exports = router;

@@ -3,16 +3,21 @@ import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
 import productRoutes from "./routes/productRoutes.js";
+import authRoutes from "./routes/authRoutes.js";
 
 dotenv.config();
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: ["https://gurukrupa-giftarticles-site-d9rwn2bah-nikhils-projects-e7dc14d2.vercel.app"],
+  credentials: true,
+}));
 app.use(express.json());
 
 // Routes
 app.use("/api/products", productRoutes);
+app.use("/api/users", authRoutes);
 
 // Test route
 app.get("/", (req, res) => {

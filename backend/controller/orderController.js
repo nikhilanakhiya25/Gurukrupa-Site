@@ -1,7 +1,7 @@
-const Order = require("../models/Order");
-const mongoose = require("mongoose");
-const twilio = require("twilio");
-const PDFDocument = require("pdfkit");
+import Order from "../models/Order.js";
+import mongoose from "mongoose";
+import twilio from "twilio";
+import PDFDocument from "pdfkit";
 
 /* ======================= TWILIO ======================= */
 let twilioClient = null;
@@ -86,7 +86,7 @@ const normalizeShipping = (s) => {
 };
 
 /* ======================= CREATE ORDER ======================= */
-exports.createOrder = async (req, res) => {
+export const createOrder = async (req, res) => {
     try {
         if (!req.user || !req.user.id) {
             return res.status(401).json({
@@ -170,7 +170,7 @@ Total: ₹${order.totalAmount}`
 };
 
 /* ======================= USER ORDERS ======================= */
-exports.getMyOrders = async (req, res) => {
+export const getMyOrders = async (req, res) => {
     try {
         if (!req.user || !req.user.id) {
             return res.status(401).json({
@@ -196,7 +196,7 @@ exports.getMyOrders = async (req, res) => {
 };
 
 /* ======================= ADMIN ORDERS ======================= */
-exports.getAllOrders = async (req, res) => {
+export const getAllOrders = async (req, res) => {
     try {
         if (!req.user || !req.user.isAdmin) {
             return res.status(403).json({
@@ -221,7 +221,7 @@ exports.getAllOrders = async (req, res) => {
 };
 
 /* ======================= UPDATE STATUS ======================= */
-exports.updateStatus = async (req, res) => {
+export const updateStatus = async (req, res) => {
     try {
         if (!req.user || !req.user.isAdmin) {
             return res.status(403).json({
@@ -250,7 +250,7 @@ exports.updateStatus = async (req, res) => {
 };
 
 /* ======================= INVOICE PDF ======================= */
-exports.getInvoice = async (req, res) => {
+export const getInvoice = async (req, res) => {
     try {
         const order = await Order.findById(req.params.id).populate("user");
         if (!order) return res.status(404).json({
@@ -308,7 +308,7 @@ exports.getInvoice = async (req, res) => {
 };
 
 /* ======================= SEND TRACKING MESSAGE ======================= */
-exports.sendTrackingMessage = async (req, res) => {
+export const sendTrackingMessage = async (req, res) => {
     try {
         if (!req.user || !req.user.isAdmin) {
             return res.status(403).json({

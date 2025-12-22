@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://gurukrupa-site-guftarticle.onrender.com/",
+  baseURL: "https://gurukrupa-site-guftarticle.onrender.com/api/v1",
 });
 
 // Add request interceptor to set Authorization header on each request

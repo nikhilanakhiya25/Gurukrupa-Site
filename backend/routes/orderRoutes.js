@@ -1,9 +1,7 @@
-import express from "express";
+const express = require("express");
 const router = express.Router();
-import orderController from "../controller/orderController.js";
-import auth from "../middleware/auth.js";
-
-const { protect, admin } = auth;
+const { createOrder, getMyOrders, getAllOrders, updateStatus, getInvoice, sendTrackingMessage } = require("../controller/orderController.js");
+const { protect, admin } = require("../middleware/auth.js");
 
 // Create order (POST /api/orders)
 router.post("/", protect, orderController.createOrder);

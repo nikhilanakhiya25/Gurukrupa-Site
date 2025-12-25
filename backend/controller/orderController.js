@@ -1,7 +1,7 @@
-import Order from "../models/Order.js";
-import mongoose from "mongoose";
-import twilio from "twilio";
-import PDFDocument from "pdfkit";
+const Order = require("../models/Order.js");
+const mongoose = require("mongoose");
+const twilio = require("twilio");
+const PDFDocument = require("pdfkit");
 
 /* ======================= TWILIO ======================= */
 let twilioClient = null;
@@ -86,7 +86,7 @@ const normalizeShipping = (s) => {
 };
 
 /* ======================= CREATE ORDER ======================= */
-export const createOrder = async (req, res) => {
+const createOrder = async (req, res) => {
     try {
         if (!req.user || !req.user.id) {
             return res.status(401).json({
@@ -170,7 +170,7 @@ Total: ₹${order.totalAmount}`
 };
 
 /* ======================= USER ORDERS ======================= */
-export const getMyOrders = async (req, res) => {
+const getMyOrders = async (req, res) => {
     try {
         if (!req.user || !req.user.id) {
             return res.status(401).json({
@@ -221,7 +221,7 @@ export const getAllOrders = async (req, res) => {
 };
 
 /* ======================= UPDATE STATUS ======================= */
-export const updateStatus = async (req, res) => {
+const updateStatus = async (req, res) => {
     try {
         if (!req.user || !req.user.isAdmin) {
             return res.status(403).json({
@@ -250,7 +250,7 @@ export const updateStatus = async (req, res) => {
 };
 
 /* ======================= INVOICE PDF ======================= */
-export const getInvoice = async (req, res) => {
+const getInvoice = async (req, res) => {
     try {
         const order = await Order.findById(req.params.id).populate("user");
         if (!order) return res.status(404).json({
@@ -308,7 +308,7 @@ export const getInvoice = async (req, res) => {
 };
 
 /* ======================= SEND TRACKING MESSAGE ======================= */
-export const sendTrackingMessage = async (req, res) => {
+const sendTrackingMessage = async (req, res) => {
     try {
         if (!req.user || !req.user.isAdmin) {
             return res.status(403).json({
@@ -347,4 +347,13 @@ Track your order at: https://www.${carrier.toLowerCase()}.com/track/${trackingNu
             message: "Server error"
         });
     }
+};
+
+module.exports = {
+    createOrder,
+    getMyOrders,
+    getAllOrders,
+    updateStatus,
+    getInvoice,
+    sendTrackingMessage
 };

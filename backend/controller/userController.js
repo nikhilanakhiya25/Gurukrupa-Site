@@ -1,8 +1,8 @@
 // backend/controllers/userController.js
-import User from "../models/User.js";
+const User = require("../models/User.js");
 
 // GET /api/users  (Admin only)
-export const getAllUsers = async (req, res) => {
+const getAllUsers = async (req, res) => {
   try {
     // Fetch all users, hide password
     const users = await User.find().select("-password");
@@ -11,4 +11,8 @@ export const getAllUsers = async (req, res) => {
     console.error("GET USERS ERROR:", err);
     res.status(500).json({ message: "Failed to fetch users" });
   }
+};
+
+module.exports = {
+  getAllUsers
 };

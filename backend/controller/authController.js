@@ -1,6 +1,6 @@
-import User from "../models/User.js";
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+const User = require("../models/User.js");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 // 🔐 Generate JWT
 const generateToken = (id) => {
@@ -10,7 +10,7 @@ const generateToken = (id) => {
 };
 
 // ================== SIGNUP ==================
-export const signup = async (req, res) => {
+const signup = async (req, res) => {
     try {
         const {
             name,
@@ -53,8 +53,13 @@ export const signup = async (req, res) => {
     }
 };
 
+module.exports = {
+    signup,
+    login
+};
+
 // ================== LOGIN ==================
-export const login = async (req, res) => {
+const login = async (req, res) => {
     try {
         const {
             email,

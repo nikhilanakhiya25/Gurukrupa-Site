@@ -1,19 +1,23 @@
-# TODO: Fix "This site is not secure" Warning
+# TODO List for Gurukrupa-Site Deployment Fix
 
-## Completed Steps
-- [x] Confirm frontend is HTTPS (already done)
-- [x] Confirm backend URL is HTTPS (already https://gurukrupa-site-giftarticle.onrender.com)
-- [x] Update Axios API URL (already HTTPS)
-- [x] Fix CORS in backend to allow correct Vercel domains
-- [x] Add security headers to backend
-- [x] Fix syntax error in orderRoutes.js (import issue)
-- [x] Verify backend syntax (no errors)
+## Backend Setup (Render)
+- [ ] Create backend/index.js with exact code from task
+- [ ] Update backend/package.json to match task dependencies
+- [ ] Delete backend/vercel.json (not needed for Render)
+- [ ] Ensure backend folder structure matches task (models/, routes/, index.js, package.json, .env)
 
-## Pending Manual Steps
-- [ ] Redeploy backend on Render after code changes
-- [ ] Verify site in Google Search Console:
-  - Add property: https://gurukrupa-giftarticles-site.vercel.app
-  - Choose URL Prefix
-  - Verify using HTML tag
-  - After verification → Security Issues → Request Review
-- [ ] For temporary access: Click Details → Visit this unsafe site (for testing only)
+## Frontend Cleanup (Vercel)
+- [ ] Delete frontend/server.js (if exists)
+- [ ] Delete frontend/src/index.js (backend code)
+- [ ] Delete frontend/api/ folder
+- [ ] Delete frontend/lib/dbConnect.js
+- [ ] Update frontend/vercel.json with headers from task
+- [ ] Create frontend/.env with VITE_API_URL
+- [ ] Update frontend/src/api/api.js to use VITE_API_URL
+
+## Deployment Preparation
+- [ ] Test backend locally (npm start in backend/)
+- [ ] Test frontend locally (npm run dev in frontend/)
+- [ ] Deploy backend to Render
+- [ ] Update VITE_API_URL in frontend/.env with Render URL
+- [ ] Deploy frontend to Vercel

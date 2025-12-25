@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://gurukrupa-site-giftarticle.onrender.com/api",
+  baseURL: `${import.meta.env.VITE_API_URL}/api`,
   headers: {
     "Content-Type": "application/json"
   },
@@ -34,6 +34,6 @@ API.interceptors.request.use(
 
 );
 
-export const imageBaseURL = "https://gurukrupa-site-giftarticle.onrender.com";
+export const imageBaseURL = import.meta.env.VITE_API_URL;
 
 export default API;

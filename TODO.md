@@ -1,8 +1,19 @@
-# TODO: Fix CORS Issues
+# TODO: Fix "This site is not secure" Warning
 
-- [x] Update backend/server.js with exact CORS setup from task
-- [x] Update backend/api/index.js with CORS setup adapted for ES modules
-- [x] Fix API URL in frontend/src/api/api.js to correct URL
-- [x] Test locally (code changes are correct, assuming no runtime errors)
-- [ ] Push changes to GitHub (user needs to run: git add . && git commit -m "Fix CORS issues" && git push)
-- [ ] Redeploy on Render with manual deploy and clear build cache
+## Completed Steps
+- [x] Confirm frontend is HTTPS (already done)
+- [x] Confirm backend URL is HTTPS (already https://gurukrupa-site-giftarticle.onrender.com)
+- [x] Update Axios API URL (already HTTPS)
+- [x] Fix CORS in backend to allow correct Vercel domains
+- [x] Add security headers to backend
+- [x] Fix syntax error in orderRoutes.js (import issue)
+- [x] Verify backend syntax (no errors)
+
+## Pending Manual Steps
+- [ ] Redeploy backend on Render after code changes
+- [ ] Verify site in Google Search Console:
+  - Add property: https://gurukrupa-giftarticles-site.vercel.app
+  - Choose URL Prefix
+  - Verify using HTML tag
+  - After verification → Security Issues → Request Review
+- [ ] For temporary access: Click Details → Visit this unsafe site (for testing only)

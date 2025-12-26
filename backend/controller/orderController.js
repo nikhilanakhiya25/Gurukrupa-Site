@@ -196,7 +196,7 @@ const getMyOrders = async (req, res) => {
 };
 
 /* ======================= ADMIN ORDERS ======================= */
-export const getAllOrders = async (req, res) => {
+const getAllOrders = async (req, res) => {
     try {
         if (!req.user || !req.user.isAdmin) {
             return res.status(403).json({

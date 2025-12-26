@@ -28,6 +28,10 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB connected"))
   .catch(err => console.error(err));
 
+app.get("/", (req, res) => {
+  res.send("🚀 Gurukrupa Backend API is running");
+});
+
 app.use("/api/products", require("./routes/productRoutes"));
 app.use("/api/users", require("./routes/user"));
 app.use("/api/orders", require("./routes/orderRoutes"));

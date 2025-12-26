@@ -1,23 +1,19 @@
-# TODO List for Gurukrupa-Site Deployment Fix
+# TODO List for API and CORS Fixes
 
-## Backend Setup (Render)
-- [ ] Create backend/index.js with exact code from task
-- [ ] Update backend/package.json to match task dependencies
-- [ ] Delete backend/vercel.json (not needed for Render)
-- [ ] Ensure backend folder structure matches task (models/, routes/, index.js, package.json, .env)
+## Frontend Fixes
+- [x] Update frontend/src/api/api.js to remove /api from baseURL
 
-## Frontend Cleanup (Vercel)
-- [ ] Delete frontend/server.js (if exists)
-- [ ] Delete frontend/src/index.js (backend code)
-- [ ] Delete frontend/api/ folder
-- [ ] Delete frontend/lib/dbConnect.js
-- [ ] Update frontend/vercel.json with headers from task
-- [ ] Create frontend/.env with VITE_API_URL
-- [ ] Update frontend/src/api/api.js to use VITE_API_URL
+## Backend Fixes
+- [x] Update backend/server.js to mount authRoutes.js for /api/users
+- [x] Add correct Vercel domain to CORS origins in backend/server.js
+- [x] Add GET /api/users route to authRoutes.js with JWT protection
 
-## Deployment Preparation
-- [ ] Test backend locally (npm start in backend/)
-- [ ] Test frontend locally (npm run dev in frontend/)
-- [ ] Deploy backend to Render
-- [ ] Update VITE_API_URL in frontend/.env with Render URL
-- [ ] Deploy frontend to Vercel
+## Deployment
+- [x] Commit and push code changes to repository
+
+## Testing (After Render Redeploy)
+- [ ] Redeploy backend on Render (manual step)
+- [ ] Test backend health: https://gurukrupa-site-giftarticle.onrender.com/
+- [ ] Test products API: https://gurukrupa-site-giftarticle.onrender.com/api/products
+- [ ] Test login API (POST) /api/users/login
+- [ ] Test signup page /signup

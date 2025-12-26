@@ -2,6 +2,8 @@ const express = require("express");
 const User = require("../models/User.js");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const auth = require("../middleware/auth");
+const userController = require("../controller/userController");
 
 const router = express.Router();
 
@@ -116,5 +118,8 @@ router.post("/login", async (req, res) => {
         });
     }
 });
+
+// ================= GET ALL USERS (Admin Only) =================
+router.get("/", auth.protect, auth.admin, userController.getAllUsers);
 
 module.exports = router;

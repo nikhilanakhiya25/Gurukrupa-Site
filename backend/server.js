@@ -29,7 +29,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/products", require("./routes/productRoutes"));
-app.use("/api/users", require("./routes/user"));
+app.use("/api/users", require("./routes/authRoutes"));
 app.use("/api/orders", require("./routes/orderRoutes"));
 
 mongoose.connect(process.env.MONGO_URI)

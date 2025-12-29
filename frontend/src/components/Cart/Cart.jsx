@@ -3,19 +3,17 @@ import { CartContext } from '../../contexts/CartContext';
 import { useNavigate } from 'react-router-dom';
 import './Cart.css';
 
-import { imageBaseURL } from '../../api/api';
-
 export default function Cart() {
   const { cart, removeFromCart, updateQty } = useContext(CartContext);
   const navigate = useNavigate();
 
-  // ⭐ Ensure price is treated as number
-  const total = cart.reduce(
-    (sum, i) => sum + Number(i.price) * i.qty,
+  // ⭐ Ensure price is treated as number - Safe cart handling
+  const total = (cart || []).reduce(
+    (sum, i) => sum + Number(i.price || 0) * (i.qty || 0),
     0
   );
 
-  if (cart.length === 0) {
+  if (!cart || cart.length === 0) {
     return (
       <div className="cart-page empty-cart">
         <h2>Your Cart is Empty</h2>
@@ -41,9 +39,11 @@ export default function Cart() {
             {/* ✅ FIXED Product Image */}
             <img
               src={
-                item.image
-                  ? `${BASE_URL}${item.image}`
-                  : 'https://via.placeholder.com/100'
+                item.image?.startsWith("data:image")
+                  ? item.image
+                  : item.image
+                    ? `${import.meta.env.VITE_API_URL}/${item.image}`
+                    : 'https://via.placeholder.com/100'
               }
               alt={item.name}
               onError={(e) =>

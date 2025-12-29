@@ -35,7 +35,7 @@ const Dashboard = () => {
     // ✅ USERS
     const fetchUsers = async () => {
         try {
-            const res = await API.get("/user");
+            const res = await API.get("/admin/users");
             setUsers(res.data.users || res.data || []);
         } catch (err) {
             console.log("Users:", err.response?.data || err.message);

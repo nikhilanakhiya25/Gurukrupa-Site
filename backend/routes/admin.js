@@ -120,7 +120,7 @@ router.get("/products", protect, admin, async (req, res) => {
     const products = await Product.find().sort({
       createdAt: -1
     });
-    res.json(products);
+    res.json({ products });
   } catch (err) {
     res.status(500).json({
       message: err.message

@@ -30,8 +30,6 @@ export default function App() {
       {/* Admin Sidebar - Only for admins */}
       {user?.role?.toLowerCase() === "admin" && <AdminSidebar />}
 
-
-
       <Routes>
         {/* Public */}
         <Route path="/" element={<HomePage />} />

@@ -1,19 +1,22 @@
-# TODO List for API and CORS Fixes
+# Security and API Configuration Fixes
 
-## Frontend Fixes
-- [x] Update frontend/src/api/api.js to remove /api from baseURL
+## Information Gathered
+- Frontend uses VITE_API_URL environment variable for API calls (good practice)
+- Backend CORS configured with "https://gurukrupa-giftarticle.vercel.app" but task specifies "https://gurukrupa-site-giftarticle.vercel.app"
+- No HTTP URLs found in source code
+- No dangerous JS patterns (eval, document.write, window.location) found
+- Backend deployed on Vercel with api/index.js as entry point
 
-## Backend Fixes
-- [x] Update backend/server.js to mount authRoutes.js for /api/users
-- [x] Add correct Vercel domain to CORS origins in backend/server.js
-- [x] Add GET /api/users route to authRoutes.js with JWT protection
+## Plan
+- [x] Update CORS origin in backend/api/index.js to "https://gurukrupa-site-giftarticle.vercel.app"
+- [x] Update CORS origin in backend/server.js to "https://gurukrupa-site-giftarticle.vercel.app"
+- [x] Ensure VITE_API_URL is set to HTTPS backend URL in production
 
-## Deployment
-- [x] Commit and push code changes to repository
+## Dependent Files
+- backend/api/index.js
+- backend/server.js
 
-## Testing (After Render Redeploy)
-- [ ] Redeploy backend on Render (manual step)
-- [ ] Test backend health: https://gurukrupa-site-giftarticle.onrender.com/
-- [ ] Test products API: https://gurukrupa-site-giftarticle.onrender.com/api/products
-- [ ] Test login API (POST) /api/users/login
-- [ ] Test signup page /signup
+## Followup Steps
+- [ ] Redeploy backend after CORS updates
+- [ ] Set VITE_API_URL environment variable in Vercel frontend deployment
+- [ ] Test API calls in production to ensure HTTPS and CORS work correctly

@@ -121,7 +121,7 @@ const Dashboard = () => {
                                     <img
                                         src={
                                             p.image
-                                                ? `${imageBaseURL}${p.image}`
+                                                ? p.image
                                                 : "https://via.placeholder.com/60"
                                         }
                                         alt={p.name}

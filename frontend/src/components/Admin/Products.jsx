@@ -26,6 +26,7 @@ export default function Products() {
         countInStock: "",
     });
     const [file, setFile] = useState(null);
+    const [imageUrl, setImageUrl] = useState("");
     const [editingId, setEditingId] = useState(null);
     const [loading, setLoading] = useState(false);
 
@@ -67,7 +68,11 @@ export default function Products() {
             );
             fd.append("countInStock", form.countInStock);
 
-            if (file) fd.append("image", file);
+            if (imageUrl) {
+                fd.append("image", imageUrl); // Cloudinary URL
+            } else if (file) {
+                fd.append("image", file); // File upload
+            }
 
             if (editingId) {
                 // UPDATE
@@ -133,6 +138,7 @@ export default function Products() {
             countInStock: "",
         });
         setFile(null);
+        setImageUrl("");
         setEditingId(null);
     };
 
@@ -181,6 +187,19 @@ export default function Products() {
                 </div>
 
                 <div className="form-row">
+                    <label>Image URL (Cloudinary)</label>
+                    <input
+                        type="text"
+                        value={imageUrl}
+                        onChange={(e) => setImageUrl(e.target.value)}
+                        placeholder="Paste Cloudinary image URL"
+                    />
+                </div>
+
+                <p style={{ margin: "10px 0" }}>OR</p>
+
+                <div className="form-row">
+                    <label>Upload Image</label>
                     <input type="file" onChange={(e) => setFile(e.target.files[0])} />
                 </div>
 

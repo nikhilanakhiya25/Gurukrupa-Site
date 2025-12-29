@@ -54,17 +54,18 @@ router.post(
         price,
         colors,
         category,
-        countInStock
-      } =
-      req.body;
+        countInStock,
+        image: imageUrl
+      } = req.body;
 
-      let imageUrl = "";
+      let finalImageUrl = imageUrl || ""; // Use provided URL or empty string
+
       if (req.file) {
-        // Upload to Cloudinary
+        // Upload to Cloudinary if file is provided
         const result = await cloudinary.uploader.upload(req.file.path, {
           folder: "gurukrupa-products",
         });
-        imageUrl = result.secure_url;
+        finalImageUrl = result.secure_url;
 
         // Remove local file after upload
         fs.unlinkSync(req.file.path);
@@ -76,7 +77,7 @@ router.post(
         price,
         category,
         countInStock,
-        image: imageUrl,
+        image: finalImageUrl,
         colors: colors ? colors.split(",") : [],
       });
 

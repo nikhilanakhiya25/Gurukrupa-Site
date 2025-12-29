@@ -19,15 +19,17 @@ export const AuthProvider = ({
   // 🔹 Load auth from localStorage
   useEffect(() => {
     try {
-      const savedUser = localStorage.getItem("userInfo");
+      const storedUser = localStorage.getItem("user");
+      const storedToken = localStorage.getItem("token");
 
-      if (savedUser) {
-        setUser(JSON.parse(savedUser));
-        setToken(JSON.parse(savedUser).token);
+      if (storedUser && storedToken) {
+        setUser(JSON.parse(storedUser));
+        setToken(storedToken);
       }
     } catch (err) {
       console.error("Auth load error:", err);
-      localStorage.removeItem("userInfo");
+      localStorage.removeItem("user");
+      localStorage.removeItem("token");
     } finally {
       setLoading(false);
     }
@@ -37,23 +39,19 @@ export const AuthProvider = ({
   const login = (userData, tokenData) => {
     if (!userData || !tokenData) return;
 
-    const userInfo = {
-      ...userData,
-      role: userData.isAdmin ? "admin" : "user",
-      token: tokenData,
-    };
-
-    setUser(userInfo);
+    setUser(userData);
     setToken(tokenData);
 
-    localStorage.setItem("userInfo", JSON.stringify(userInfo));
+    localStorage.setItem("token", tokenData);
+    localStorage.setItem("user", JSON.stringify(userData));
   };
 
   // 🚪 LOGOUT
   const logout = () => {
     setUser(null);
     setToken(null);
-    localStorage.removeItem("userInfo");
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
   };
 
   // 🛠 SAFE PROFILE UPDATE (username, avatar, etc.)
@@ -64,7 +62,7 @@ export const AuthProvider = ({
         ...prev,
         ...updates
       };
-      localStorage.setItem("userInfo", JSON.stringify(updatedUser));
+      localStorage.setItem("user", JSON.stringify(updatedUser));
       return updatedUser;
     });
   };

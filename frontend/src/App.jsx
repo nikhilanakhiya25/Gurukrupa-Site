@@ -88,6 +88,13 @@ export default function App() {
                   <span className="user-info">
                     Welcome, {user?.name || user?.email}
                   </span>
+
+                  {user?.role === "admin" && (
+                    <Link to="/admin/dashboard" className="admin-btn">
+                      Admin Panel
+                    </Link>
+                  )}
+
                   <button onClick={handleLogout} className="logout-btn">
                     Logout
                   </button>

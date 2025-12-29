@@ -29,14 +29,13 @@ export default function LoginPage() {
         password,
       });
 
-      const { token, _id, name, email: userEmail, isAdmin } = res.data;
-      const user = { _id, name, email: userEmail, isAdmin };
+      const { token, user } = res.data;
 
       // Save auth data
       login(user, token);
 
       // Redirect
-      if (user?.isAdmin) {
+      if (user?.role === "admin") {
         navigate("/admin/dashboard");
       } else {
         navigate("/");

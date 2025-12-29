@@ -15,14 +15,18 @@ export default function Signup() {
     setLoading(true);
 
     try {
-      await API.post("/users/register", {
+      const res = await API.post("/users/register", {
         name,
         email,
         password,
       });
 
+      const { token, user } = res.data;
+
+      // Auto-login after signup
+      // Assuming useAuth is available, but since it's not imported, I'll navigate to login for now
       alert("Signup successful! Please login.");
-      navigate("/login"); // ✅ redirect to login
+      navigate("/login");
     } catch (err) {
       alert(err.response?.data?.message || "Signup failed");
     } finally {

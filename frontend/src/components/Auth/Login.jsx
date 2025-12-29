@@ -29,7 +29,8 @@ export default function LoginPage() {
         password,
       });
 
-      const { token, user } = res.data;
+      const { token, _id, name, email: userEmail, isAdmin } = res.data;
+      const user = { _id, name, email: userEmail, isAdmin };
 
       // Save auth data
       login(user, token);

@@ -8,13 +8,8 @@ const userController = require("../controller/userController");
 const router = express.Router();
 
 // Helper: Generate JWT
-const generateToken = (user) => {
-    return jwt.sign({
-            id: user._id,
-            email: user.email
-        },
-        process.env.JWT_SECRET || "secret123"
-    );
+const generateToken = (id) => {
+    return jwt.sign({ id }, process.env.JWT_SECRET || "secret123", { expiresIn: "3655d" });
 };
 
 // ================= SIGNUP =================
@@ -49,17 +44,14 @@ router.post("/register", async (req, res) => {
             password: hashedPassword,
         });
 
-        const token = generateToken(user);
+        const token = generateToken(user._id);
 
         res.status(201).json({
-            success: true,
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            isAdmin: user.isAdmin,
             token,
-            user: {
-                id: user._id,
-                name: user.name,
-                email: user.email,
-                role: user.isAdmin ? "admin" : "user",
-            },
         });
     } catch (err) {
         console.error(err);

@@ -20,3 +20,8 @@
 - [ ] Redeploy backend after CORS updates
 - [ ] Set VITE_API_URL environment variable in Vercel frontend deployment
 - [ ] Test API calls in production to ensure HTTPS and CORS work correctly
+
+## ✅ Completed
+- Updated CORS origins in backend/server.js to use "https://gurukrupa-site-giftarticle.vercel.app"
+- Verified backend/api/index.js already has correct CORS origin
+- Authentication fixes completed (JWT tokens, login responses, frontend token handling)

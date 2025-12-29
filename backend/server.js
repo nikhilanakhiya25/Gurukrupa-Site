@@ -7,8 +7,7 @@ const app = express();
 
 app.use(cors({
   origin: [
-    "https://gurukrupa-giftarticles-site.vercel.app",
-    "https://gurukrupa-giftarticle.vercel.app",
+    "https://gurukrupa-site-giftarticle.vercel.app",
     "http://localhost:5173"
   ],
   methods: ["GET", "POST", "PUT", "DELETE"],

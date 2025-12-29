@@ -90,11 +90,7 @@ export default function Orders() {
                             {o.items?.map((item, index, p) => (
                                 <div key={p._id} className="product-item">
                                     <img
-                                        src={
-                                            p.image
-                                                ? `${BASE_URL}${p.image}`
-                                                : "https://via.placeholder.com/60"
-                                        }
+                                        src={getImageSrc(p.image)}
                                         alt={p.name}
                                         onError={(e) =>
                                             (e.target.src = "https://via.placeholder.com/60")

@@ -8,7 +8,11 @@ import {
 } from "lucide-react";
 import "./AdminPanels.css";
 
-import { imageBaseURL } from "../../api/api";
+// Helper function to get image src
+const getImageSrc = (image) => {
+  if (!image || !image.data) return "https://via.placeholder.com/60";
+  return `data:${image.contentType};base64,${image.data}`;
+};
 
 const Dashboard = () => {
     const [products, setProducts] = useState([]);

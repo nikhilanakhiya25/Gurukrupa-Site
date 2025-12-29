@@ -195,7 +195,7 @@ export default function Products() {
                 {products.map((p) => (
                     <div className="product-card" key={p._id}>
                         <img
-                            src={p.image ? `${imageBaseURL}${p.image}` : "https://via.placeholder.com/150"}
+                            src={getImageSrc(p.image)}
                             alt={p.name}
                             className="product-img"
                         />

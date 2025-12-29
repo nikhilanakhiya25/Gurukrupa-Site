@@ -3,7 +3,11 @@ import API from '../api/api';
 import { CartContext } from '../contexts/CartContext';
 import './productlist.css';
 
-const imageBaseURL = import.meta.env.VITE_IMAGE_BASE_URL;
+// Helper function to get image src
+const getImageSrc = (image) => {
+  if (!image || !image.data) return "/no-image.png";
+  return `data:${image.contentType};base64,${image.data}`;
+};
 
 export default function ProductList() {
   const { addToCart } = useContext(CartContext);
@@ -101,11 +105,7 @@ export default function ProductList() {
           <div key={p._id} className="product-card">
             <div className="img-box">
               <img
-                src={
-                  p.image
-                    ? `${imageBaseURL}${p.image}`
-                    : 'https://via.placeholder.com/250'
-                }
+                src={getImageSrc(p.image)}
                 alt={p.name}
                 onError={(e) => {
                   e.target.src = 'https://via.placeholder.com/250';

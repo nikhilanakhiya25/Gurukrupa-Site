@@ -40,7 +40,7 @@ export const AuthProvider = ({
 
     const normalizedUser = {
       ...userData,
-      role: userData.role?.toLowerCase() || "user",
+      role: userData.isAdmin ? "admin" : "user",
     };
 
     setUser(normalizedUser);

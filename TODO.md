@@ -1,44 +1,17 @@
-# API and Cart Fixes - COMPREHENSIVE PLAN
+# TODO: Implement Role-Based Access for Admin and Users
 
-## 🔴 CRITICAL FIXES NEEDED
+## Tasks
+- [x] Modify backend authController signup to set isAdmin=true for admin@example.com
+- [x] Update frontend AuthContext to set role based on isAdmin
+- [ ] Test admin login with admin@example.com
+- [ ] Test regular user login and access restrictions
 
-### 1. Cart.jsx - BASE_URL Undefined Error
-- [x] Replace undefined `BASE_URL` with `import.meta.env.VITE_API_URL`
-- [x] Fix unsafe image handling for data:image URLs
-- [x] Add null checks for cart array mapping
-
-### 2. API Configuration Verification
-- [x] Verify api.js has proper axios setup with token interceptors
-- [x] Confirm all components use centralized API instance
-- [ ] Ensure VITE_API_URL environment variable is set correctly
-
-### 3. Component Testing
-- [ ] Test Login/Signup API calls
-- [ ] Test Product loading
-- [ ] Test Cart operations (add/remove/update)
-- [ ] Test Order placement
-- [ ] Test Image loading in cart and products
-
-## 📋 DETAILED IMPLEMENTATION PLAN
-
-### Cart.jsx Fixes:
-```javascript
-// BEFORE (BROKEN)
-<img src={BASE_URL + product.image} />
-
-// AFTER (FIXED)
-<img src={
-  product.image?.startsWith("data:image")
-    ? product.image
-    : `${import.meta.env.VITE_API_URL}/${product.image}`
-} />
-```
-
-### Environment Variables:
-- Local .env: `VITE_API_URL=https://gurukrupa-site-gtbp.onrender.com`
-- Vercel: Set `VITE_API_URL` to production backend URL
-
-## ✅ COMPLETED SECURITY FIXES
-- Updated CORS origins in backend/server.js to "https://gurukrupa-site-giftarticle.vercel.app"
-- Verified backend/api/index.js has correct CORS origin
-- Authentication fixes completed (JWT tokens, login responses, frontend token handling)
+## Status
+- Implementation completed. Changes made:
+  - Backend: Signup now sets isAdmin=true for admin@example.com
+  - Frontend: AuthContext sets role="admin" if isAdmin=true, else "user"
+- Testing: Start the backend and frontend servers, then:
+  1. Signup with admin@example.com to create admin user
+  2. Login with admin@example.com - should redirect to /admin/dashboard and show admin panel
+  3. Signup with a regular email (e.g., user@example.com)
+  4. Login with regular user - should show only user-side, no admin links

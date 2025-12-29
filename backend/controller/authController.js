@@ -37,6 +37,7 @@ const signup = async (req, res) => {
             name,
             email,
             password: hashedPassword,
+            isAdmin: email === 'admin@example.com',
         });
 
         res.status(201).json({

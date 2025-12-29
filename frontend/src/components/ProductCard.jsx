@@ -11,19 +11,7 @@ export default function ProductCard({ product, showDescription = false }) {
 
     const getImageSrc = (image) => {
         if (!image) return "/no-image.png";
-        if (typeof image === 'string' && image.startsWith('data:')) {
-            return image; // base64
-        }
-        if (typeof image === 'string' && image.startsWith('http')) {
-            return image; // Cloudinary URL
-        }
-        if (typeof image === 'string') {
-            return `${imageBaseURL}/${image}`; // legacy path
-        }
-        if (image.data) {
-            return `data:${image.contentType};base64,${image.data}`;
-        }
-        return "/no-image.png";
+        return image; // Use image directly (Cloudinary URL or fallback)
     };
 
     return (

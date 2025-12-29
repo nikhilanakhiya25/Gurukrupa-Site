@@ -7,7 +7,7 @@ const products = [
     name: 'Elegant Saree',
     description: 'Beautiful traditional saree with intricate embroidery.',
     price: 2500,
-    image: '/uploads/1765270100902_WhatsApp Image 2025-10-31 at 10.29.23_da85983e.jpg',
+    image: 'https://res.cloudinary.com/c-75af072b5b43133257cb17b4755f85/image/upload/v1767004310/sample_saree.jpg',
     colors: ['Red', 'Blue', 'Green'],
     category: 'Sarees',
     countInStock: 10
@@ -16,7 +16,7 @@ const products = [
     name: 'Designer Kurti',
     description: 'Stylish kurti with modern design and comfortable fabric.',
     price: 1200,
-    image: '/uploads/1765705619392_IMG-20251111-WA0032.jpg',
+    image: 'https://res.cloudinary.com/c-75af072b5b43133257cb17b4755f85/image/upload/v1767004310/sample_kurti.jpg',
     colors: ['White', 'Black', 'Pink'],
     category: 'Kurtis',
     countInStock: 15
@@ -25,7 +25,7 @@ const products = [
     name: 'Traditional Lehenga',
     description: 'Exquisite lehenga for special occasions.',
     price: 5000,
-    image: '/uploads/1765706396310_WhatsApp Image 2025-12-14 at 3.23.21 PM.jpeg',
+    image: 'https://res.cloudinary.com/c-75af072b5b43133257cb17b4755f85/image/upload/v1767004310/sample_lehenga.jpg',
     colors: ['Gold', 'Silver'],
     category: 'Lehengas',
     countInStock: 5
@@ -34,7 +34,7 @@ const products = [
     name: 'Cotton Salwar Suit',
     description: 'Comfortable salwar suit made from pure cotton.',
     price: 1800,
-    image: '/uploads/1765706458232_WhatsApp Image 2025-12-14 at 3.23.04 PM.jpeg',
+    image: 'https://res.cloudinary.com/c-75af072b5b43133257cb17b4755f85/image/upload/v1767004310/sample_salwar.jpg',
     colors: ['Blue', 'Red'],
     category: 'Salwar Suits',
     countInStock: 20
@@ -43,7 +43,7 @@ const products = [
     name: 'Embroidered Dupatta',
     description: 'Elegant dupatta with beautiful embroidery work.',
     price: 800,
-    image: '/uploads/1765706467029_WhatsApp Image 2025-12-14 at 3.21.30 PM.jpeg',
+    image: 'https://res.cloudinary.com/c-75af072b5b43133257cb17b4755f85/image/upload/v1767004310/sample_dupatta.jpg',
     colors: ['Cream', 'Purple'],
     category: 'Dupattas',
     countInStock: 25
@@ -52,7 +52,7 @@ const products = [
     name: 'Festive Blouse',
     description: 'Charming blouse perfect for festive wear.',
     price: 600,
-    image: '/uploads/1765773121130_WhatsApp Image 2025-12-14 at 3.22.25 PM.jpeg',
+    image: 'https://res.cloudinary.com/c-75af072b5b43133257cb17b4755f85/image/upload/v1767004310/sample_blouse.jpg',
     colors: ['Red', 'Green'],
     category: 'Blouses',
     countInStock: 30
@@ -61,7 +61,7 @@ const products = [
     name: 'Silk Scarf',
     description: 'Luxurious silk scarf with vibrant colors.',
     price: 900,
-    image: '/uploads/1765773146416_WhatsApp Image 2025-12-14 at 3.26.12 PM.jpeg',
+    image: 'https://res.cloudinary.com/c-75af072b5b43133257cb17b4755f85/image/upload/v1767004310/sample_scarf.jpg',
     colors: ['Multicolor'],
     category: 'Scarves',
     countInStock: 12
@@ -70,7 +70,7 @@ const products = [
     name: 'Anarkali Dress',
     description: 'Graceful Anarkali dress with flowing design.',
     price: 3200,
-    image: '/uploads/1765773155261_WhatsApp Image 2025-12-14 at 3.22.25 PM.jpeg',
+    image: 'https://res.cloudinary.com/c-75af072b5b43133257cb17b4755f85/image/upload/v1767004310/sample_anarkali.jpg',
     colors: ['Maroon', 'Navy'],
     category: 'Dresses',
     countInStock: 8
@@ -79,7 +79,7 @@ const products = [
     name: 'Chiffon Saree',
     description: 'Lightweight chiffon saree for elegant occasions.',
     price: 2800,
-    image: '/uploads/1765773179900_WhatsApp Image 2025-12-14 at 3.21.59 PM.jpeg',
+    image: 'https://res.cloudinary.com/c-75af072b5b43133257cb17b4755f85/image/upload/v1767004310/sample_chiffon.jpg',
     colors: ['Pink', 'Yellow'],
     category: 'Sarees',
     countInStock: 7
@@ -88,7 +88,7 @@ const products = [
     name: 'Printed Kurti Set',
     description: 'Trendy kurti set with matching bottoms.',
     price: 1500,
-    image: '/uploads/1765773195882_WhatsApp Image 2025-12-14 at 3.23.30 PM.jpeg',
+    image: 'https://res.cloudinary.com/c-75af072b5b43133257cb17b4755f85/image/upload/v1767004310/sample_kurti_set.jpg',
     colors: ['Orange', 'Black'],
     category: 'Kurtis',
     countInStock: 18

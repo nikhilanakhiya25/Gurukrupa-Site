@@ -5,16 +5,7 @@ import "./Product.css";
 // Helper function to get image src
 const getImageSrc = (image) => {
   if (!image) return "/no-image.png";
-  if (typeof image === 'string' && image.startsWith('data:')) {
-    return image; // base64
-  }
-  if (typeof image === 'string') {
-    return `${imageBaseURL}/${image}`; // path
-  }
-  if (image.data) {
-    return `data:${image.contentType};base64,${image.data}`;
-  }
-  return "/no-image.png";
+  return image; // Use image directly (Cloudinary URL or fallback)
 };
 
 export default function Products() {

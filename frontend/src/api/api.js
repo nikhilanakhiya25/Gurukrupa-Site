@@ -34,6 +34,6 @@ API.interceptors.request.use(
 
 );
 
-export const imageBaseURL = import.meta.env.VITE_API_URL;
+export const imageBaseURL = import.meta.env.VITE_IMAGE_BASE_URL;
 
 export default API;

@@ -2,6 +2,21 @@ import React, { useState, useEffect } from "react";
 import API, { imageBaseURL } from "../../api/api";
 import "./Product.css";
 
+// Helper function to get image src
+const getImageSrc = (image) => {
+  if (!image) return "/no-image.png";
+  if (typeof image === 'string' && image.startsWith('data:')) {
+    return image; // base64
+  }
+  if (typeof image === 'string') {
+    return `${imageBaseURL}/${image}`; // path
+  }
+  if (image.data) {
+    return `data:${image.contentType};base64,${image.data}`;
+  }
+  return "/no-image.png";
+};
+
 export default function Products() {
     const [products, setProducts] = useState([]);
     const [form, setForm] = useState({

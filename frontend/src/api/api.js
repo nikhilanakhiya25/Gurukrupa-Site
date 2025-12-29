@@ -31,6 +31,7 @@ API.interceptors.request.use(
 
 );
 
-export const imageBaseURL = import.meta.env.VITE_IMAGE_BASE_URL;
+// Images are served from the same API URL under /uploads path
+export const imageBaseURL = import.meta.env.VITE_API_URL;
 
 export default API;

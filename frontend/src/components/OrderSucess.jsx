@@ -8,7 +8,7 @@ export default function OrderSuccess() {
             <h1>🎉 Order Placed!</h1>
             <p>Your order was placed successfully. You will receive an SMS/WhatsApp confirmation.</p>
             <div style={{ marginTop: 20 }}>
-                <Link to="/orders" style={{ marginRight: 10 }}>View my orders</Link>
+                {/* <Link to="/orders" style={{ marginRight: 10 }}>View my orders</Link> */}
                 <Link to="/">Continue shopping</Link>
             </div>
         </div>

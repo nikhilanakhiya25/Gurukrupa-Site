@@ -90,7 +90,7 @@ export default function Orders() {
                             {o.items?.map((item, index) => (
                                 <div key={item.product?._id || index} className="product-item">
                                     <img
-                                        src={`${process.env.REACT_APP_API_URL}/${item.product?.image}`}
+                                        src={`${import.meta.env.VITE_API_URL}/${item.product?.image}`}
                                         alt={item.product?.name}
                                         style={{ width: "60px", height: "60px", objectFit: "cover" }}
                                         onError={(e) =>

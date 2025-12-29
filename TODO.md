@@ -1,11 +1,14 @@
-# TODO: Fix Product Edit Image Cast Error
+# TODO: Fix getImageSrc Bug in Admin Orders Page
 
 ## Completed Tasks
-- [x] Fix backend update logic in `backend/routes/admin.js` to prevent setting image to invalid values
-- [x] Fix frontend API headers in `frontend/src/api/api.js` to allow proper FormData handling
+- [x] Identify the bug: getImageSrc is not defined in Orders.jsx
+- [x] Replace getImageSrc usage with direct backend image URL
+- [x] Fix the map function parameters (removed incorrect 'p' parameter)
+- [x] Add proper image styling (width, height, objectFit)
+- [x] Ensure REACT_APP_API_URL is used correctly
+- [x] Test the fix by deploying to Vercel
 
-## Pending Tasks
-- [ ] Redeploy backend on Render
-- [ ] Redeploy frontend on Vercel
-- [ ] Test editing product without selecting a new image
-- [ ] Test editing product with selecting a new image
+## Next Steps
+- Redeploy the frontend to Vercel to apply the changes
+- Verify that /admin/orders page loads without errors
+- Confirm images display correctly from backend /uploads

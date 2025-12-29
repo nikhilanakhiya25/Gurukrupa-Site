@@ -87,11 +87,12 @@ export default function Orders() {
 
                         {/* PRODUCTS WITH IMAGE + QTY */}
                         <div className="order-col products-col">
-                            {o.items?.map((item, index, p) => (
-                                <div key={p._id} className="product-item">
+                            {o.items?.map((item, index) => (
+                                <div key={item.product?._id || index} className="product-item">
                                     <img
-                                        src={getImageSrc(p.image)}
-                                        alt={p.name}
+                                        src={`${process.env.REACT_APP_API_URL}/${item.product?.image}`}
+                                        alt={item.product?.name}
+                                        style={{ width: "60px", height: "60px", objectFit: "cover" }}
                                         onError={(e) =>
                                             (e.target.src = "https://via.placeholder.com/60")
                                         }

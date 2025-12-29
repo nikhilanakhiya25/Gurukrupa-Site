@@ -19,16 +19,15 @@ export const AuthProvider = ({
   // 🔹 Load auth from localStorage
   useEffect(() => {
     try {
-      const savedUser = localStorage.getItem("user");
-      const savedToken = localStorage.getItem("token");
+      const savedUser = localStorage.getItem("userInfo");
 
-      if (savedUser && savedToken) {
+      if (savedUser) {
         setUser(JSON.parse(savedUser));
-        setToken(savedToken);
+        setToken(JSON.parse(savedUser).token);
       }
     } catch (err) {
       console.error("Auth load error:", err);
-      localStorage.clear();
+      localStorage.removeItem("userInfo");
     } finally {
       setLoading(false);
     }
@@ -38,23 +37,23 @@ export const AuthProvider = ({
   const login = (userData, tokenData) => {
     if (!userData || !tokenData) return;
 
-    const normalizedUser = {
+    const userInfo = {
       ...userData,
       role: userData.isAdmin ? "admin" : "user",
+      token: tokenData,
     };
 
-    setUser(normalizedUser);
+    setUser(userInfo);
     setToken(tokenData);
 
-    localStorage.setItem("user", JSON.stringify(normalizedUser));
-    localStorage.setItem("token", tokenData);
+    localStorage.setItem("userInfo", JSON.stringify(userInfo));
   };
 
   // 🚪 LOGOUT
   const logout = () => {
     setUser(null);
     setToken(null);
-    localStorage.clear();
+    localStorage.removeItem("userInfo");
   };
 
   // 🛠 SAFE PROFILE UPDATE (username, avatar, etc.)
@@ -65,7 +64,7 @@ export const AuthProvider = ({
         ...prev,
         ...updates
       };
-      localStorage.setItem("user", JSON.stringify(updatedUser));
+      localStorage.setItem("userInfo", JSON.stringify(updatedUser));
       return updatedUser;
     });
   };

@@ -1,14 +1,11 @@
-## Tasks
-- [x] Add static file serving in backend/server.js: app.use("/uploads", express.static("uploads"));
-- [x] Create .env file in frontend root with VITE_IMAGE_BASE_URL=https://gurukrupa-site-gtbp.onrender.com
-- [x] Update frontend/src/api/api.js to export imageBaseURL = import.meta.env.VITE_IMAGE_BASE_URL
-- [x] Update frontend/src/components/ProductList.jsx to use imageBaseURL for path images
-- [x] Update frontend/src/components/ProductCard.jsx to use ${imageBaseURL}/${product.image}
-- [x] Update frontend/src/components/Admin/Products.jsx to define getImageSrc or use imageBaseURL
-- [x] npm run build in frontend
-- [ ] Redeploy frontend to Vercel with VITE_IMAGE_BASE_URL env var
-- [ ] Test that images display correctly
-=======
-## Tasks
-- [x] Add static file serving in backend/server.js: app.use("/uploads", express.static("uploads"));
-- [x] Create .env file in frontend root with VITE_IMAGE_BASE_URL=https://gurukrupa-site-gtbp.onrender.com
+# TODO: Fix Product Edit Image Cast Error
+
+## Completed Tasks
+- [x] Fix backend update logic in `backend/routes/admin.js` to prevent setting image to invalid values
+- [x] Fix frontend API headers in `frontend/src/api/api.js` to allow proper FormData handling
+
+## Pending Tasks
+- [ ] Redeploy backend on Render
+- [ ] Redeploy frontend on Vercel
+- [ ] Test editing product without selecting a new image
+- [ ] Test editing product with selecting a new image

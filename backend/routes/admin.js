@@ -81,6 +81,9 @@ router.put(
         ...req.body
       };
 
+      // Remove image from update to prevent setting to {} or invalid value
+      delete update.image;
+
       if (req.file) update.image = `/uploads/${req.file.filename}`;
       if (update.colors) update.colors = update.colors.split(",");
 

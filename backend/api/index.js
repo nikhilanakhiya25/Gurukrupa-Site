@@ -2,12 +2,15 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import {
+  fileURLToPath
+} from 'url';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-const __filename = fileURLToPath(import.meta.url);
+const __filename = fileURLToPath(
+  import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
@@ -17,13 +20,18 @@ app.use(cors({
   origin: [
     "http://localhost:5173",
     "http://localhost:3000",
-    "https://gurukrupa-site-giftarticle.vercel.app"
+    "https://gurukrupa-site-nu.vercel.app"
   ],
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ limit: '10mb', extended: true }));
+app.use(express.json({
+  limit: '10mb'
+}));
+app.use(express.urlencoded({
+  limit: '10mb',
+  extended: true
+}));
 app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 
 // Routes
@@ -48,7 +56,9 @@ app.get("/", (req, res) => {
 
 // Test route
 app.get("/api/test", (req, res) => {
-  res.json({ message: "API Working" });
+  res.json({
+    message: "API Working"
+  });
 });
 
 // MongoDB connect (IMPORTANT: connect ONCE)

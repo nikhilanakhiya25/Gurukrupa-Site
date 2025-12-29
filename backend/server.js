@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const path = require("path");
 require("dotenv").config();
 
 const app = express();
@@ -25,7 +26,7 @@ app.use((req, res, next) => {
 app.use(express.json());
 
 // Serve static files from uploads directory
-app.use("/uploads", express.static("uploads"));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.get("/", (req, res) => {
   res.send("🚀 Gurukrupa Backend API is running");

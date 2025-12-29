@@ -34,9 +34,9 @@ export default function Footer() {
                     <p>Email: gurukrupagiftarticles@gmail.com </p>
                     <p>Phone: 6355279928 /7284818088</p>
                     <div className="social-icons">
-                        <Link to="https://google.com" target="_blank">🌐</Link>
+                        <Link to="https://www.google.com/maps/place/Gurukrupa+Gift+Article/@23.0466857,72.5859239,801m/data=!3m2!1e3!4b1!4m6!3m5!1s0x395e85431c4a9069:0xa04d125c1366cdbc!8m2!3d23.0466857!4d72.5884988!16s%2Fg%2F11m41mg7hs?entry=ttu&g_ep=EgoyMDI1MTIwOS4wIKXMDSoASAFQAw%3D%3D" target="_blank">📍</Link>
                         <Link to="https://facebook.com" target="_blank">📘</Link>
-                        <Link to="https://twitter.com" target="_blank">🐦</Link>
+                        
                         <Link to="https://instagram.com" target="_blank">📸</Link>
                     </div>
                 </div>

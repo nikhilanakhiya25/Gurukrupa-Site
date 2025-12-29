@@ -14,8 +14,11 @@ export default function ProductCard({ product, showDescription = false }) {
         if (typeof image === 'string' && image.startsWith('data:')) {
             return image; // base64
         }
+        if (typeof image === 'string' && image.startsWith('http')) {
+            return image; // Cloudinary URL
+        }
         if (typeof image === 'string') {
-            return `${imageBaseURL}/${image}`; // path
+            return `${imageBaseURL}/${image}`; // legacy path
         }
         if (image.data) {
             return `data:${image.contentType};base64,${image.data}`;
@@ -26,7 +29,15 @@ export default function ProductCard({ product, showDescription = false }) {
     return (
         <div className="product-card">
             <div className="img-box">
-                <img src={getImageSrc(product.image)} alt={product.name} />
+                <img
+                    src={getImageSrc(product.image)}
+                    alt={product.name}
+                    loading="lazy"
+                    style={{ width: "100%", height: "200px", objectFit: "cover" }}
+                    onError={(e) => {
+                        e.target.src = "/no-image.png";
+                    }}
+                />
             </div>
 
             <h3>{product.name}</h3>

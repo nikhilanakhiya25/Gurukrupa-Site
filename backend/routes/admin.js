@@ -3,6 +3,7 @@ const express = require("express");
 const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
+const cloudinary = require("cloudinary").v2;
 
 const Product = require("../models/Product");
 const User = require("../models/User");
@@ -13,6 +14,13 @@ const {
 } = require("../middleware/auth");
 
 const router = express.Router();
+
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 /* ===================== MULTER CONFIG ===================== */
 const storage = multer.diskStorage({
@@ -50,13 +58,25 @@ router.post(
       } =
       req.body;
 
+      let imageUrl = "";
+      if (req.file) {
+        // Upload to Cloudinary
+        const result = await cloudinary.uploader.upload(req.file.path, {
+          folder: "gurukrupa-products",
+        });
+        imageUrl = result.secure_url;
+
+        // Remove local file after upload
+        fs.unlinkSync(req.file.path);
+      }
+
       const product = await Product.create({
         name,
         description,
         price,
         category,
         countInStock,
-        image: req.file ? `/uploads/${req.file.filename}` : "",
+        image: imageUrl,
         colors: colors ? colors.split(",") : [],
       });
 
@@ -84,7 +104,17 @@ router.put(
       // Remove image from update to prevent setting to {} or invalid value
       delete update.image;
 
-      if (req.file) update.image = `/uploads/${req.file.filename}`;
+      if (req.file) {
+        // Upload to Cloudinary
+        const result = await cloudinary.uploader.upload(req.file.path, {
+          folder: "gurukrupa-products",
+        });
+        update.image = result.secure_url;
+
+        // Remove local file after upload
+        fs.unlinkSync(req.file.path);
+      }
+
       if (update.colors) update.colors = update.colors.split(",");
 
       const product = await Product.findByIdAndUpdate(

@@ -1,9 +1,12 @@
-const User = require("../models/User");
-const orderController = require("../controller/orderController");
-const {
-  protect,
-  admin
-} = require("../middleware/auth");
+const express = require("express");
+const router = express.Router();
 
-const Product = require("../models/Product");
-const productController = require("../controller/productController");
+const User = require("../models/User");
+
+// example route
+router.get("/users", async (req, res) => {
+  const users = await User.find();
+  res.json(users);
+});
+
+module.exports = router;

@@ -21,7 +21,7 @@ app.use(cors({
   origin: [
     "https://gurukrupa-site-giftarticle.vercel.app",
     "https://gurukrupa-site-nu.vercel.app",
-    "http://localhost:5173"
+
   ],
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true

@@ -1,9 +1,8 @@
-import OrderSuccess from "./components/OrderSucess";
-import OrderTracking from "./components/OrderTracking"; // Assuming this exists, or adjust
 
 import MyOrders from "./components/userOrders";
-import OrderSuccess from "./components/OrderSucess";
-import OrderTracking from "./components/OrderTracking"; // Assuming this exists, or adjust
+import OrderSuccess from "./components/OrderSuccess";
+import OrderTracking from "./components/OrderTracking";
+
 import PrivacyPolicy from "./components/PrivacyPolicy";
 import Terms from "./components/Terms";
 import { useAuth } from "./contexts/AuthContext";
@@ -18,9 +17,7 @@ import Products from "./components/Admin/Products";
 import Orders from "./components/Admin/Orders";
 import Settings from "./components/Admin/Setting";
 
-import MyOrders from "./components/userOrders";
-import OrderSuccess from "./components/OrderSucess";
-import OrderTracking from "./components/OrderTracking"; // Assuming this exists, or adjust
+// Assuming this exists, or adjust
 
 import "./app.css";
 import { ToastContainer, toast } from "react-toastify";

@@ -57,8 +57,8 @@ export default function Signup() {
         />
 
         <input
-          type="password"
-          placeholder="Password"
+          type="text"
+          placeholder="Demo password (not real)"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required

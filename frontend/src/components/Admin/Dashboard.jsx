@@ -65,7 +65,8 @@ const Dashboard = () => {
 
     return (
         <div className="dashboard">
-            <h2 className="page-title">Admin Dashboard</h2>
+            <h2 className="page-title">Sample Dashboard</h2>
+            <p style={{fontSize:'14px', color:'gray'}}>This is a demo website. No real user data is collected.</p>
 
             {/* ===== SUMMARY ===== */}
             <div className="stats-grid">

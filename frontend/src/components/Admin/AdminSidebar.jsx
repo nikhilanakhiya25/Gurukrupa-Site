@@ -41,7 +41,7 @@ export default function AdminSidebar() {
 
         <nav className="admin-sidebar-menu">
           <NavLink to="/admin/dashboard" className="admin-sidebar-item" onClick={() => setSidebarOpen(false)}>
-            <LayoutDashboard size={16} /> Dashboard
+            <LayoutDashboard size={16} /> Sample Dashboard
           </NavLink>
 
           <NavLink to="/admin/products" className="admin-sidebar-item" onClick={() => setSidebarOpen(false)}>

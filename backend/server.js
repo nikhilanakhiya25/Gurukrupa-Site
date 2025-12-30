@@ -14,6 +14,8 @@ cloudinary.config({
 
 const app = express();
 
+app.use(helmet());
+
 app.use(cors({
   origin: [
     "https://gurukrupa-site-giftarticle.vercel.app",

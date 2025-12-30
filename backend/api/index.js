@@ -54,12 +54,7 @@ app.get("/", (req, res) => {
   res.send("Backend is running on Vercel 🚀");
 });
 
-// Test route
-app.get("/api/test", (req, res) => {
-  res.json({
-    message: "API Working"
-  });
-});
+
 
 // MongoDB connect (IMPORTANT: connect ONCE)
 let isConnected = false;

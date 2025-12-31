@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import API from "../api/api";
+import { getImageSrc } from "../utils/getImageSrc";
 import "./OrderTracking.css";
 
 export default function OrderTracking() {
@@ -27,7 +28,7 @@ export default function OrderTracking() {
                 <h3>Items:</h3>
                 {order.items.map((i) => (
                     <div key={i._id} className="track-item">
-                        <img src={i.image} alt="" />
+                        <img src={getImageSrc(i.image)} alt="" />
                         <span>{i.name}</span>
                         <span>Qty: {i.qty}</span>
                         <span>₹{i.price}</span>

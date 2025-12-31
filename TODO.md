@@ -1,24 +1,23 @@
-# Admin API Routes Fix - TODO
+# Fix Image Loading Issue in MERN App
 
-## Completed Tasks
-- [x] Added Product and Order models import to backend/routes/admin.js
-- [x] Added /products route to admin.js that fetches all products from database
-- [x] Added /orders route to admin.js that fetches all orders from database
-- [x] Removed demo text from frontend/src/components/Admin/Dashboard.jsx
-- [x] Changed title from "Sample Dashboard" to "Dashboard"
-- [x] Added productController.js with CRUD functions for products
-- [x] Updated admin.js with full product and order routes including middleware
-- [x] Installed multer for file uploads
+## Information Gathered
+- getImageSrc function is already implemented correctly in frontend/src/utils/getImageSrc.js
+- Backend server.js already serves static files from /uploads directory
+- Most components are using getImageSrc, but some are not:
+  - ProductCart.jsx uses src={product.image} directly
+  - OrderTracking.jsx uses src={i.image} directly
+- VITE_API_URL needs to be set in Vercel environment variables as https://your-backend-url.onrender.com (no trailing slash)
 
-## Next Steps
-- [ ] Redeploy backend on Render (Manual Deploy → Clear cache & deploy)
-- [ ] Test APIs directly in browser:
-  - https://gurukrupa-site-gtbp.onrender.com/api/admin/products
-  - https://gurukrupa-site-gtbp.onrender.com/api/admin/orders
-- [ ] Verify frontend dashboard loads real data instead of showing 0 products/orders
+## Plan
+- [ ] Update ProductCart.jsx to import and use getImageSrc
+- [ ] Update OrderTracking.jsx to import and use getImageSrc
+- [ ] Ensure all image usages are consistent
 
-## Notes
-- Backend routes are now mounted at /api/admin in server.js
-- Frontend is already configured to call /admin/products and /admin/orders (relative to API base)
-- Dashboard now uses real API data lengths for counts
-- Added multer for image uploads in product CRUD
+## Dependent Files
+- frontend/src/components/ProductCart.jsx
+- frontend/src/components/OrderTracking.jsx
+
+## Followup Steps
+- Set VITE_API_URL in Vercel dashboard environment variables
+- Redeploy frontend on Vercel
+- Test image loading

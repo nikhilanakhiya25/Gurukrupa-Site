@@ -29,7 +29,7 @@ const Dashboard = () => {
     // ✅ PRODUCTS
     const fetchProducts = async () => {
         try {
-            const res = await API.get("/admin/products");
+            const res = await API.get("/products");
             setProducts(res.data.products || res.data || []);
         } catch (err) {
             console.log("Products:", err.response?.data || err.message);
@@ -49,7 +49,7 @@ const Dashboard = () => {
     // ✅ ADMIN ORDERS (FIXED)
     const fetchOrders = async () => {
         try {
-            const res = await API.get("/admin/orders"); // 🔥 FIX
+            const res = await API.get("/orders"); // 🔥 FIX
             const data = res.data.orders || res.data || [];
             setOrders(data);
 

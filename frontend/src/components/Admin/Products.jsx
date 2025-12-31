@@ -182,12 +182,7 @@ export default function Products() {
                     />
                 </div>
 
-                <p style={{ margin: "10px 0" }}>OR</p>
-
-                <div className="form-row">
-                    <label>Upload Image</label>
-                    <input type="file" onChange={(e) => setFile(e.target.files[0])} />
-                </div>
+                
 
                 <button className="btn-submit" type="submit" disabled={loading}>
                     {loading

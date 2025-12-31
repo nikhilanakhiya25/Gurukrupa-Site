@@ -6,6 +6,9 @@
 - [x] Added /orders route to admin.js that fetches all orders from database
 - [x] Removed demo text from frontend/src/components/Admin/Dashboard.jsx
 - [x] Changed title from "Sample Dashboard" to "Dashboard"
+- [x] Added productController.js with CRUD functions for products
+- [x] Updated admin.js with full product and order routes including middleware
+- [x] Installed multer for file uploads
 
 ## Next Steps
 - [ ] Redeploy backend on Render (Manual Deploy → Clear cache & deploy)
@@ -18,3 +21,4 @@
 - Backend routes are now mounted at /api/admin in server.js
 - Frontend is already configured to call /admin/products and /admin/orders (relative to API base)
 - Dashboard now uses real API data lengths for counts
+- Added multer for image uploads in product CRUD

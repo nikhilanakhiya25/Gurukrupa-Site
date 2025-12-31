@@ -97,7 +97,7 @@ export default function App() {
 
                   {user?.role === "admin" && (
                     <Link to="/admin/dashboard" className="admin-btn">
-                      Demo Panel
+                      Admin Panel
                     </Link>
                   )}
 

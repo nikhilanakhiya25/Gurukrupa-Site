@@ -1,12 +1,20 @@
-# TODO: Fix Phishing Flags
+# Admin API Routes Fix - TODO
 
-- [x] 1. Update App.jsx: Change "Admin" to "Demo Panel", "Login" to "Demo Login", "Signup" to "Demo Signup".
-- [x] 2. Update Login.jsx: Change title/button to "Demo Login", change password input to type="text" with placeholder "Demo password (not real)", add demo text, disable real submission with alert.
-- [x] 3. Update Signup.jsx: Change title to "Demo Signup", change password input to type="text", disable submission.
-- [x] 4. Update Dashboard.jsx: Change title to "Sample Dashboard", add demo text.
-- [x] 5. Update AdminSidebar.jsx: Change "Dashboard" to "Sample Dashboard".
-- [ ] 6. Create PrivacyPolicy.jsx and Terms.jsx components with demo content.
-- [ ] 7. Update App.jsx: Add routes for /privacy-policy and /terms.
-- [ ] 8. Update Footer.jsx: Change "Login / Signup" to "Demo Login / Signup", add privacy/terms links.
-- [ ] 9. Update frontend/vercel.json: Add security headers (X-Frame-Options, X-Content-Type-Options, Permissions-Policy).
-- [ ] 10. Add demo text to all risky pages.
+## Completed Tasks
+- [x] Added Product and Order models import to backend/routes/admin.js
+- [x] Added /products route to admin.js that fetches all products from database
+- [x] Added /orders route to admin.js that fetches all orders from database
+- [x] Removed demo text from frontend/src/components/Admin/Dashboard.jsx
+- [x] Changed title from "Sample Dashboard" to "Dashboard"
+
+## Next Steps
+- [ ] Redeploy backend on Render (Manual Deploy → Clear cache & deploy)
+- [ ] Test APIs directly in browser:
+  - https://gurukrupa-site-gtbp.onrender.com/api/admin/products
+  - https://gurukrupa-site-gtbp.onrender.com/api/admin/orders
+- [ ] Verify frontend dashboard loads real data instead of showing 0 products/orders
+
+## Notes
+- Backend routes are now mounted at /api/admin in server.js
+- Frontend is already configured to call /admin/products and /admin/orders (relative to API base)
+- Dashboard now uses real API data lengths for counts

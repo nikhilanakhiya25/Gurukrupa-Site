@@ -63,7 +63,7 @@ export default function App() {
 
               {/* Admin Only */}
               {user?.role?.toLowerCase() === "admin" && (
-                <Link to="/admin" onClick={() => setIsMenuOpen(false)}>Demo Panel</Link>
+                <Link to="/admin" onClick={() => setIsMenuOpen(false)}>Admin Panel</Link>
               )}
             </div>
           </div>

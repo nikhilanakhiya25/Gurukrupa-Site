@@ -1,4 +1,13 @@
 
+import React, { useState, useContext } from "react";
+import { Link, Routes, Route, Navigate } from "react-router-dom";
+import { CartProvider, CartContext } from "./contexts/CartContext";
+
+import HomePage from "./components/HomePage";
+import ProductList from "./components/ProductList";
+import Login from "./components/Auth/Login";
+import Signup from "./components/Auth/Signup";
+
 import MyOrders from "./components/userOrders";
 import OrderSuccess from "./components/OrderSuccess";
 import OrderTracking from "./components/OrderTracking";

@@ -1,13 +1,8 @@
 import React, { useEffect, useState, useContext } from 'react';
 import API from '../api/api';
 import { CartContext } from '../contexts/CartContext';
+import { getImageSrc } from '../utils/getImageSrc';
 import './productlist.css';
-
-// Helper function to get image src
-const getImageSrc = (image) => {
-  if (!image) return "/no-image.png";
-  return image; // Use image directly (Cloudinary URL or fallback)
-};
 
 export default function ProductList() {
   const { addToCart } = useContext(CartContext);

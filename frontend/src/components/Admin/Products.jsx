@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from "react";
 import API, { imageBaseURL } from "../../api/api";
+import { getImageSrc } from "../../utils/getImageSrc";
 import "./Product.css";
-
-// Helper function to get image src
-const getImageSrc = (image) => {
-  if (!image) return "/no-image.png";
-  return image; // Use image directly (Cloudinary URL or fallback)
-};
 
 export default function Products() {
     const [products, setProducts] = useState([]);

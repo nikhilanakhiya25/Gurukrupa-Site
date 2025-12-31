@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { CartContext } from '../../contexts/CartContext';
 import { useNavigate } from 'react-router-dom';
+import { getImageSrc } from '../../utils/getImageSrc';
 import './Cart.css';
 
 export default function Cart() {
@@ -38,13 +39,7 @@ export default function Cart() {
 
             {/* ✅ FIXED Product Image */}
             <img
-              src={
-                item.image?.startsWith("data:image")
-                  ? item.image
-                  : item.image
-                    ? `${import.meta.env.VITE_API_URL}/${item.image}`
-                    : 'https://via.placeholder.com/100'
-              }
+              src={getImageSrc(item.image)}
               alt={item.name}
               onError={(e) =>
                 (e.target.src = 'https://via.placeholder.com/100')

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import API from "../../api/api";
+import { getImageSrc } from "../../utils/getImageSrc";
 import {
     Package,
     Users,
@@ -7,12 +8,6 @@ import {
     IndianRupee,
 } from "lucide-react";
 import "./AdminPanels.css";
-
-// Helper function to get image src
-const getImageSrc = (image) => {
-  if (!image || !image.data) return "https://via.placeholder.com/60";
-  return `data:${image.contentType};base64,${image.data}`;
-};
 
 const Dashboard = () => {
     const [products, setProducts] = useState([]);
@@ -119,11 +114,7 @@ const Dashboard = () => {
                             <tr key={p._id}>
                                 <td>
                                     <img
-                                        src={
-                                            p.image
-                                                ? p.image
-                                                : "https://via.placeholder.com/60"
-                                        }
+                                        src={getImageSrc(p.image, 60)}
                                         alt={p.name}
                                         onError={(e) =>
                                             (e.target.src = "https://via.placeholder.com/60")

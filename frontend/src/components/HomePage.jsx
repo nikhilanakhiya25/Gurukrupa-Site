@@ -55,7 +55,7 @@ export default function HomePage() {
       {/* ⭐ Featured Product */}
       <section className="highlight-product">
         <div className="highlight-image">
-          <img src={featuredProduct.image} alt={featuredProduct.name} />
+          <img src={getImageSrc(featuredProduct.image)} alt={featuredProduct.name} />
         </div>
 
         <div className="highlight-text">

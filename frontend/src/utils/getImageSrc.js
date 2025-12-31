@@ -9,7 +9,12 @@ export const getImageSrc = (image, size = 100) => {
     return image;
   }
 
-  // Case 3: Image path string (future-proof)
+  // Case 3: Full URL (e.g., Cloudinary or external images)
+  if (typeof image === "string" && (image.startsWith("http://") || image.startsWith("https://"))) {
+    return image;
+  }
+
+  // Case 4: Image path string (future-proof)
   if (typeof image === "string" && image.length > 0) {
     return `${import.meta.env.VITE_API_URL}/${image}`;
   }

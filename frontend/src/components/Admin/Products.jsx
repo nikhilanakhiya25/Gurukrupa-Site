@@ -218,6 +218,9 @@ export default function Products() {
                             src={getImageSrc(p.image)}
                             alt={p.name}
                             className="product-img"
+                            onError={(e) => {
+                                e.target.src = 'https://via.placeholder.com/150';
+                            }}
                         />
 
                         <div className="product-info">

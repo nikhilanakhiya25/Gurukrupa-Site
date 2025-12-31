@@ -56,7 +56,13 @@ export default function HomePage() {
       {/* ⭐ Featured Product */}
       <section className="highlight-product">
         <div className="highlight-image">
-          <img src={getImageSrc(featuredProduct.image)} alt={featuredProduct.name} />
+          <img
+            src={getImageSrc(featuredProduct.image)}
+            alt={featuredProduct.name}
+            onError={(e) => {
+              e.target.src = 'https://via.placeholder.com/300';
+            }}
+          />
         </div>
 
         <div className="highlight-text">

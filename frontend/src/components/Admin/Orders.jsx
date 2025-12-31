@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import API from "../../api/api";
 import "./Order.css";
 
+const BACKEND_URL = "https://gurukrupa-site-gtbp.onrender.com";
+
 export default function Orders() {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -88,21 +90,18 @@ export default function Orders() {
                         {/* PRODUCTS WITH IMAGE + QTY */}
                         <div className="order-col products-col">
                             {o.items?.map((item, index) => (
-                                <div key={item.product?._id || index} className="product-item">
+                                <div key={item.product?._id || index} className="order-product">
                                     <img
-                                        src={`${import.meta.env.VITE_API_URL}/${item.product?.image}`}
-                                        alt={item.product?.name}
-                                        style={{ width: "60px", height: "60px", objectFit: "cover" }}
-                                        onError={(e) =>
-                                            (e.target.src = "https://via.placeholder.com/60")
-                                        }
-                                        className="table-img"
+                                        src={`${BACKEND_URL}${item.image}`}
+                                        alt={item.name}
+                                        width="80"
+                                        style={{ borderRadius: "8px" }}
                                     />
 
-                                    <div className="product-info">
-                                        <p><b>{item.product?.name || item.name}</b></p>
+                                    <div>
+                                        <p>{item.name}</p>
                                         <p>Qty: {item.qty}</p>
-                                        <p>Price: ₹ {item.price || item.product?.price || 0}</p>
+                                        <p>₹ {item.price}</p>
                                     </div>
                                 </div>
                             ))}

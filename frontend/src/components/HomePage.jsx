@@ -3,6 +3,7 @@ import { useAuth } from "../contexts/AuthContext";
 import ProductCard from "./ProductCard";
 import Footer from "./Footer";
 import API from "../api/api";
+import { getImageSrc } from "../utils/getImageSrc";
 import "./HomePage.css";
 
 export default function HomePage() {

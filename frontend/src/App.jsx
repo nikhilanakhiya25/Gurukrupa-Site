@@ -5,7 +5,7 @@ import { CartProvider, CartContext } from "./contexts/CartContext";
 
 import HomePage from "./components/HomePage";
 import ProductList from "./components/ProductList";
-import Login from "./components/Auth/Login";
+import LoginPage from "./components/Auth/Login";
 import Signup from "./components/Auth/Signup";
 
 import MyOrders from "./components/userOrders";

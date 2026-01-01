@@ -14,6 +14,7 @@ export default function Footer() {
                     <p>
                         Shop the latest trends in fashion, electronics, and more. Fast
                         delivery, easy returns, and 24/7 support.
+                        
                     </p>
                 </div>
 
@@ -24,15 +25,17 @@ export default function Footer() {
                         <li><Link to="/">Home</Link></li>
                         <li><Link to="/products">Products</Link></li>
                         <li><Link to="/cart">Cart</Link></li>
-                        <li><Link to="/login">Demo Login / Signup</Link></li>
-                        <li><Link to="/privacy-policy">Privacy Policy</Link></li>
-                        <li><Link to="/terms">Terms of Service</Link></li>
+                        <li><Link to="/login">Login / Signup</Link></li>
+                        {/* <li><Link to="/privacy-policy">Privacy Policy</Link></li>
+                        <li><Link to="/terms">Terms of Service</Link></li> */}
                     </ul>
                 </div>
 
                 {/* CONTACT + SOCIAL */}
                 <div className="footer-contact">
                     <h4>Contact Us</h4>
+                    <p>Address: Shop No.35, Sahajanand Shopping Centre, 
+                        opp. Rajasthan School, Shahibag, Ahmedabad, Gujarat 380004</p>
                     <p>Email: gurukrupagiftarticles@gmail.com </p>
                     <p>Phone: 6355279928 /7284818088</p>
                     <div className="social-icons">

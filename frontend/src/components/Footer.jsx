@@ -14,7 +14,7 @@ export default function Footer() {
                     <p>
                         Shop the latest trends in fashion, electronics, and more. Fast
                         delivery, easy returns, and 24/7 support.
-                        Address: Shop No.35, Sahajanand Shopping Centre, opp. Rajasthan School, Shahibag, Ahmedabad, Gujarat 380004
+                        
                     </p>
                 </div>
 
@@ -34,6 +34,8 @@ export default function Footer() {
                 {/* CONTACT + SOCIAL */}
                 <div className="footer-contact">
                     <h4>Contact Us</h4>
+                    <p>Address: Shop No.35, Sahajanand Shopping Centre, 
+                        opp. Rajasthan School, Shahibag, Ahmedabad, Gujarat 380004</p>
                     <p>Email: gurukrupagiftarticles@gmail.com </p>
                     <p>Phone: 6355279928 /7284818088</p>
                     <div className="social-icons">
